@@ -1,0 +1,128 @@
+﻿@model Diploma.Models.ViewModels.OrderViewModel
+
+@{
+    ViewData["Title"] = "Create Order";
+}
+
+<div class="page-header">
+    <div class="container">
+        <div class="row align-items-center">
+            <div class="col-md-6">
+                <h1>Create New Order</h1>
+                <p>Add a new repair service order</p>
+            </div>
+            <div class="col-md-6 text-md-end">
+                <a asp-action="Index" class="btn btn-light">
+                    <i class="bi bi-arrow-left me-2"></i>Back to Orders
+                </a>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="container">
+    <div class="card">
+        <div class="card-header bg-primary text-white">
+            <h4 class="mb-0">Order Details</h4>
+        </div>
+        <div class="card-body">
+            <form asp-action="Create" method="post">
+                <div asp-validation-summary="All" class="text-danger mb-3"></div>
+                
+                <div class="row mb-3">
+                    <div class="col-md-6">
+                    </div>
+                    <div class="col-md-6">
+                        <div class="mb-3">
+                            <label asp-for="ProductId" class="form-label">Product</label>
+                            <select asp-for="ProductId" asp-items="ViewBag.Products" class="form-select">
+                                <option disabled selected>--Select Product--</option>
+                            </select>
+                            <span asp-validation-for="ProductId" class="text-danger"></span>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="row mb-3">
+                    <div class="col-md-6">
+                        <div class="mb-3">
+                            <label asp-for="ProductBrand" class="form-label">Product Brand</label>
+                            <input asp-for="ProductBrand" class="form-control" />
+                            <span asp-validation-for="ProductBrand" class="text-danger"></span>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="mb-3">
+                            <label asp-for="ProductModel" class="form-label">Product Model</label>
+                            <input asp-for="ProductModel" class="form-control" />
+                            <span asp-validation-for="ProductModel" class="text-danger"></span>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="row mb-3">
+                    <div class="col-md-6">
+                        <div class="mb-3">
+                            <label asp-for="RepairType" class="form-label">Repair Type</label>
+                            <select asp-for="RepairType" class="form-select">
+                                <option value="Maintenance">Maintenance</option>
+                                <option value="Repair">Repair</option>
+                                <option value="Installation">Installation</option>
+                                <option value="Inspection">Inspection</option>
+                            </select>
+                            <span asp-validation-for="RepairType" class="text-danger"></span>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="mb-3">
+                            <label asp-for="OrderStatus" class="form-label">Status</label>
+                            <select asp-for="OrderStatus" class="form-select">
+                                <option value="Чакащ">Pending</option>
+                                <option value="В процес">In Progress</option>
+                                <option value="Завършен">Completed</option>
+                                <option value="Отказан">Cancelled</option>
+                            </select>
+                            <span asp-validation-for="OrderStatus" class="text-danger"></span>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="mb-3">
+                    <label asp-for="AdditionalNotes" class="form-label">AdditionalNotes</label>
+                    <textarea asp-for="AdditionalNotes" class="form-control" rows="3"></textarea>
+                    <span asp-validation-for="AdditionalNotes" class="text-danger"></span>
+                </div>
+                
+                <div class="d-flex justify-content-end">
+                    <a asp-action="Index" class="btn btn-secondary me-2">Cancel</a>
+                    <button type="submit" class="btn btn-primary">
+                        <i class="bi bi-save me-2"></i>Create Order
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+    
+    <script>
+        // Populate product details when a product is selected
+        $(document).ready(function() {
+            $('#ProductId').change(function() {
+                var productId = $(this).val();
+                if (productId) {
+                    $.ajax({
+                        url: '@Url.Action("GetProductDetails", "Order")/' + productId,
+                        type: 'GET',
+                        success: function(data) {
+                            $('#ProductBrand').val(data.brand);
+                            $('#ProductModel').val(data.model);
+                        }
+                    });
+                }
+            });
+        });
+    </script>
+}

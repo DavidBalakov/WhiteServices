@@ -1,0 +1,6 @@
+{
+  "dependencies": {
+    "datatables": "^1.10.18",
+    "toastr": "^2.1.4"
+  }
+}

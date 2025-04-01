@@ -1,0 +1,268 @@
+﻿@model IEnumerable<Diploma.Entities.Product>
+
+@{
+    ViewData["Title"] = "Products";
+}
+
+<div class="page-header">
+    <div class="container">
+        <div class="row align-items-center">
+            <div class="col-md-6">
+                <h1>Products</h1>
+                <p>Manage appliances in the system</p>
+            </div>
+            <div class="col-md-6 text-md-end">
+                <a href="/Products/Create" class="btn btn-primary">
+                    <i class="bi bi-plus-circle me-2"></i>Add Product
+                </a>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="container">
+    <div class="card shadow-sm">
+        <div class="card-header bg-white py-3">
+            <div class="row align-items-center">
+                <div class="col-md-8">
+                    <h5 class="mb-0 text-primary">Product Management</h5>
+                </div>
+                <div class="col-md-4">
+                    <div class="input-group">
+                        <span class="input-group-text bg-light border-0">
+                            <i class="bi bi-search text-muted"></i>
+                        </span>
+                        <input type="text" id="productSearch" class="form-control border-0 bg-light" placeholder="Search products...">
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="card-body border-bottom pb-0">
+            <div class="row">
+                <div class="col-md-12">
+                    <div class="filter-container mb-3">
+                        <div class="d-flex flex-wrap gap-2">
+                            <div class="filter-group">
+                                <label class="form-label mb-1">Brand</label>
+                                <select id="brandFilter" class="form-select form-select-sm">
+                                    <option value="">All Brands</option>
+                                    @{
+                                        var brands = Model.Select(p => p.Brand).Distinct().OrderBy(b => b);
+                                        foreach (var brand in brands)
+                                        {
+                                            <option value="@brand">@brand</option>
+                                        }
+                                    }
+                                </select>
+                            </div>
+                            
+                            <div class="filter-group ms-auto">
+                                <label class="form-label mb-1">Sort By</label>
+                                <select id="sortFilter" class="form-select form-select-sm">
+                                    <option value="brand">Brand (A-Z)</option>
+                                    <option value="brand-desc">Brand (Z-A)</option>
+                                    <option value="model">Model (A-Z)</option>
+                                    <option value="model-desc">Model (Z-A)</option>
+                                </select>
+                            </div>
+                            
+                            <div class="filter-group d-flex align-items-end">
+                                <button id="resetFilters" class="btn btn-sm btn-outline-secondary">
+                                    <i class="bi bi-x-circle me-1"></i>Reset
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="card-body p-0">
+            <div class="table-responsive">
+                <table class="table table-hover align-middle mb-0" id="productsTable">
+                    <thead class="table-light">
+                        <tr>
+                            <th class="ps-4">Serial Number</th>
+                            <th>Brand</th>
+                            <th>Model</th>
+                            <th class="text-end pe-4">Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @if (Model != null && Model.Any())
+                        {
+                            foreach (var product in Model)
+                            {
+                                <tr data-brand="@product.Brand">
+                                    <td class="ps-4 fw-medium">@product.SerialNumber</td>
+                                    <td>@product.Brand</td>
+                                    <td>@product.Model</td>
+                                    <td class="text-end pe-4">
+                                        <div class="dropdown">
+                                            <button class="btn btn-sm btn-light" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+                                                <i class="bi bi-three-dots"></i>
+                                            </button>
+                                            <ul class="dropdown-menu dropdown-menu-end">
+                                                <li><a class="dropdown-item" href="/Products/Details/@product.UserId"><i class="bi bi-eye me-2 text-primary"></i>View</a></li>
+                                                <li><a class="dropdown-item" href="/Products/Update/@product.UserId"><i class="bi bi-pencil me-2 text-secondary"></i>Edit</a></li>
+                                                <li><hr class="dropdown-divider"></li>
+                                                <li><a class="dropdown-item text-danger" href="#" data-bs-toggle="modal" data-bs-target="#deleteProductModal" data-product-id="@product.UserId"><i class="bi bi-trash me-2"></i>Delete</a></li>
+                                            </ul>
+                                        </div>
+                                    </td>
+                                </tr>
+                            }
+                        }
+                        else
+                        {
+                            <tr>
+                                <td colspan="4" class="text-center py-5">
+                                    <div class="py-5">
+                                        <i class="bi bi-box text-muted" style="font-size: 3rem;"></i>
+                                        <h5 class="mt-3">No Products Found</h5>
+                                        <p class="text-muted mb-3">There are no products in the system yet.</p>
+                                        <a href="/Products/Create" class="btn btn-primary">
+                                            <i class="bi bi-plus-circle me-2"></i>Add New Product
+                                        </a>
+                                    </div>
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+        </div>
+        <div class="card-footer bg-white py-3">
+            <div class="row align-items-center">
+                <div class="col-md-6">
+                    <p class="mb-0 text-muted">Showing <span id="visibleCount">@(Model?.Count() ?? 0)</span> of @(Model?.Count() ?? 0) products</p>
+                </div>
+                <div class="col-md-6 text-md-end">
+                    <nav aria-label="Page navigation">
+                        <ul class="pagination pagination-sm mb-0 justify-content-end">
+                            <li class="page-item disabled">
+                                <a class="page-link" href="#" tabindex="-1" aria-disabled="true">Previous</a>
+                            </li>
+                            <li class="page-item active"><a class="page-link" href="#">1</a></li>
+                            <li class="page-item"><a class="page-link" href="#">2</a></li>
+                            <li class="page-item"><a class="page-link" href="#">3</a></li>
+                            <li class="page-item">
+                                <a class="page-link" href="#">Next</a>
+                            </li>
+                        </ul>
+                    </nav>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="deleteProductModal" tabindex="-1" aria-labelledby="deleteProductModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header border-0">
+                <h5 class="modal-title" id="deleteProductModalLabel">Confirm Delete</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body text-center py-4">
+                <i class="bi bi-exclamation-triangle text-warning" style="font-size: 3rem;"></i>
+                <h5 class="mt-3">Are you sure?</h5>
+                <p class="text-muted">Do you really want to delete this product? This process cannot be undone.</p>
+            </div>
+            <div class="modal-footer border-0">
+                <button type="button" class="btn btn-light" data-bs-dismiss="modal">Cancel</button>
+                <a href="#" id="confirmDeleteBtn" class="btn btn-danger">Delete Product</a>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        $(document).ready(function() {
+            $("#productSearch").on("keyup", function() {
+                applyFilters();
+            });
+            
+            $("#brandFilter, #sortFilter").on("change", function() {
+                applyFilters();
+            });
+            
+            $("#resetFilters").on("click", function() {
+                $("#productSearch").val("");
+                $("#brandFilter").val("");
+                $("#sortFilter").val("brand");
+                applyFilters();
+            });
+            
+            function applyFilters() {
+                var searchValue = $("#productSearch").val().toLowerCase();
+                var brandFilter = $("#brandFilter").val();
+                var sortFilter = $("#sortFilter").val();
+                var visibleCount = 0;
+                
+                $("#productsTable tbody tr").each(function() {
+                    var row = $(this);
+                    var rowText = row.text().toLowerCase();
+                    var rowBrand = row.data("brand");
+                    
+                    var matchesSearch = rowText.indexOf(searchValue) > -1;
+                    var matchesBrand = brandFilter === "" || rowBrand === brandFilter;
+                    
+                    var isVisible = matchesSearch && matchesBrand;
+                    row.toggle(isVisible);
+                    
+                    if (isVisible) visibleCount++;
+                });
+                
+                var rows = $("#productsTable tbody tr:visible").get();
+                rows.sort(function(a, b) {
+                    var keyA, keyB;
+                    
+                    switch(sortFilter) {
+                        case "brand":
+                            keyA = $(a).find("td:eq(1)").text().toUpperCase();
+                            keyB = $(b).find("td:eq(1)").text().toUpperCase();
+                            return keyA.localeCompare(keyB);
+                        case "brand-desc":
+                            keyA = $(a).find("td:eq(1)").text().toUpperCase();
+                            keyB = $(b).find("td:eq(1)").text().toUpperCase();
+                            return keyB.localeCompare(keyA);
+                        case "model":
+                            keyA = $(a).find("td:eq(2)").text().toUpperCase();
+                            keyB = $(b).find("td:eq(2)").text().toUpperCase();
+                            return keyA.localeCompare(keyB);
+                        case "model-desc":
+                            keyA = $(a).find("td:eq(2)").text().toUpperCase();
+                            keyB = $(b).find("td:eq(2)").text().toUpperCase();
+                            return keyB.localeCompare(keyA);
+                        default:
+                            return 0;
+                    }
+                });
+                
+                $.each(rows, function(index, row) {
+                    $("#productsTable tbody").append(row);
+                });
+                
+                $("#visibleCount").text(visibleCount);
+            }
+            
+            var deleteProductModal = document.getElementById('deleteProductModal');
+            if (deleteProductModal) {
+                deleteProductModal.addEventListener('show.bs.modal', function(event) {
+                    var button = event.relatedTarget;
+                    var productId = button.getAttribute('data-product-id');
+                    var confirmDeleteBtn = document.getElementById('confirmDeleteBtn');
+                    confirmDeleteBtn.href = '/Products/Delete/' + productId;
+                });
+            }
+            
+            var tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'));
+            var tooltipList = tooltipTriggerList.map(function (tooltipTriggerEl) {
+                return new bootstrap.Tooltip(tooltipTriggerEl);
+            });
+        });
+    </script>
+}
