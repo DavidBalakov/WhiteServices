@@ -1,0 +1,150 @@
+<div class="row">
+    <div class="col-12">
+        <div class="card mt-5 border-primary shadow-sm">
+            <div class="card-header bg-primary text-white">
+                <h4 class="mb-0">Потребители</h4>
+            </div>
+            <div class="card-body p-0">
+                <div class="table-responsive">
+                    <table id="patients-table" class="table table-bordered table-striped mb-0">
+                        <thead class="bg-light">
+                            <tr>
+                                <th class="text-center">Потребителско име</th>
+                                <th class="text-center">Собствено име</th>
+                                <th class="text-center">Фамилно име</th>
+                                <th class="text-center">Роля</th>
+                            </tr>
+                            <tr>
+                                <th></th>
+                                <th></th>
+                                <th></th>
+                                <th></th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <!-- Data will be populated here by DataTables -->
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Styles {
+    <style>
+        /* General Table Styling */
+        .table {
+            margin: 0;
+            font-size: 14px;
+        }
+
+        .table thead th {
+            white-space: nowrap;
+            vertical-align: middle;
+            font-weight: 600;
+        }
+
+        .table tbody td {
+            vertical-align: middle;
+        }
+
+        /* Card Styling */
+        .card {
+            border-radius: 10px;
+        }
+
+        .card-header {
+            border-radius: 10px 10px 0 0;
+            font-size: 18px;
+        }
+
+        /* Buttons */
+        .btn-warning {
+            background-color: #ffc107;
+            border-color: #ffc107;
+            transition: all 0.3s ease;
+        }
+
+        .btn-warning:hover {
+            background-color: #e0a800;
+            border-color: #d39e00;
+        }
+    </style>
+}
+
+@section Scripts {
+    <script src="~/js/datatables/datatables.min.js"></script>
+    <script>
+        function loadDataTable() {
+            $("#patients-table").DataTable({
+                processing: true,
+                ordering: true,
+                paging: true,
+                pageLength: 5,
+                bSortCellsTop: true,
+                sDom: 'tp', // remove default search box: https://stackoverflow.com/questions/29769968/remove-default-search-box-and-add-custom-one-in-jquery-datatable
+                ajax: { url: '/Admin/GetUser' },
+                language: {
+                    sEmptyTable: "Няма намерени резултати",
+                    sInfo: "Показване на записи от _START_ до _END_ от _TOTAL_ записа.",
+                    sInfoEmpty: "Показани са от 0 до 0 от 0 записа",
+                    sInfoFiltered: "(Филтрирани от _MAX_ записа)",
+                    sInfoPostFix: "",
+                    sInfoThousands: ",",
+                    sLengthMenu: "Показване на _MENU_ записа",
+                    sSearch: "Търсене:",
+                    sZeroRecords: "Няма намерени попадения...",
+                    oAria: {
+                        sSortAscending: ": Активирайте дисплея във възходящ ред",
+                        sSortDescending: ": Активирайте дисплея в низходящ ред"
+                    }
+                },
+                initComplete: function () { 
+                    this.api()
+                        .columns([0, 1, 2, 3])
+                        .every(function () {
+                            let column = this;
+                            let title = column.header(0).textContent;
+
+                            // Create input element
+                            let input = document.createElement('input');
+                            input.style.width = '100%';
+                            input.placeholder = title;
+                            column.header(1).replaceChildren(input);
+
+                            // Event listener for user input
+                            input.addEventListener('keyup', () => {
+                                if (column.search() !== this.value)
+                                    column.search(input.value).draw();
+                            });
+                        });
+                },
+                columnDefs: [
+                    { className: "dt-head-center", targets: [0, 1] },
+                    { className: "dt-body-right", targets: [0, 1] }
+                ],
+                columns: [
+                    { data: 'userName', width: '45%' },
+                    { data: 'firstName', width: '45%' },
+                    { data: 'lastName', width: '45%' },
+                    { data: 'role', width: '45%' },
+                    {
+                        data: 'id',
+                        orderable: 'false',
+                        render: function (data, type, row, meta) {
+                            return `<div class="d-flex flex-row justify-content-center gap-2">
+                                <a class="btn btn-warning" href="/Admin/ChangeRole/${data}">
+                                Смени роля</a>
+                            </div>`;
+                        },
+                    }
+                ]
+            });
+        }
+
+        $(document).ready(function () {
+            loadDataTable();
+        });
+    </script>
+}

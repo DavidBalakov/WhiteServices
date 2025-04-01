@@ -1,0 +1,70 @@
+﻿@* import { Button } from "@/components/ui/button"
+import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card"
+import { Input } from "@/components/ui/input"
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
+import Link from "next/link"
+
+export default function CreateOrderPage() {
+  return (
+    <div className="max-w-2xl mx-auto space-y-6">
+      <div>
+        <h1 className="text-3xl font-bold tracking-tight">Създай продукт</h1>
+        <p className="text-muted-foreground mt-2">Създайте нов продукт за поправка</p>
+      </div>
+
+      <Card>
+        <CardHeader>
+          <CardTitle>Информация за продукта</CardTitle>
+          <CardDescription>Изберете продукт и тип поправка</CardDescription>
+        </CardHeader>
+        <CardContent className="space-y-4">
+          <div className="space-y-2">
+            <label htmlFor="product" className="text-sm font-medium">
+              Product
+            </label>
+            <Select>
+              <SelectTrigger id="product">
+                <SelectValue placeholder="--Избери product--" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="samsung">Samsung Galaxy S21</SelectItem>
+                <SelectItem value="apple">Apple iPhone 13</SelectItem>
+                <SelectItem value="sony">Sony Xperia 1 III</SelectItem>
+              </SelectContent>
+            </Select>
+          </div>
+
+          <div className="space-y-2">
+            <label htmlFor="repairType" className="text-sm font-medium">
+              RepairType
+            </label>
+            <Select>
+              <SelectTrigger id="repairType">
+                <SelectValue placeholder="Пералня" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="washing">Пералня</SelectItem>
+                <SelectItem value="dishwasher">Съдомиялна</SelectItem>
+                <SelectItem value="fridge">Хладилник</SelectItem>
+              </SelectContent>
+            </Select>
+          </div>
+
+          <div className="space-y-2">
+            <label htmlFor="clientName" className="text-sm font-medium">
+              Име на клиента
+            </label>
+            <Input id="clientName" placeholder="Въведете име на клиента" />
+          </div>
+        </CardContent>
+        <CardFooter className="flex justify-between">
+          <Link href="/orders">
+            <Button variant="outline">Към списъка</Button>
+          </Link>
+          <Button>Създай</Button>
+        </CardFooter>
+      </Card>
+    </div>
+  )
+}
+ *@

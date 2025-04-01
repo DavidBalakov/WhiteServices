@@ -1,0 +1,97 @@
+﻿@model IEnumerable<Diploma.Models.ViewModels.OrderViewModel>
+@{
+    ViewData["Title"] = "Orders";
+}
+
+<section class="page-header">
+    <div class="container">
+        <h1>Service Orders</h1>
+        <p>Manage and track all service requests</p>
+    </div>
+</section>
+
+<section class="content-section">
+    <div class="container">
+        <div class="action-bar">
+            <div class="search-box">
+                <input type="text" id="orderSearch" placeholder="Search orders...">
+                <button type="button"><i class="fas fa-search"></i></button>
+            </div>
+            <div class="filter-options">
+                <select id="statusFilter">
+                    <option value="">All Statuses</option>
+                    <option value="Pending">Pending</option>
+                    <option value="Scheduled">Scheduled</option>
+                    <option value="Completed">Completed</option>
+                    <option value="Cancelled">Cancelled</option>
+                </select>
+                <select id="applianceFilter">
+                    <option value="">All Appliances</option>
+                    <option value="WashingMachine">Washing Machine</option>
+                    <option value="Refrigerator">Refrigerator</option>
+                    <option value="Furnace">Furnace</option>
+                </select>
+            </div>
+            <a asp-action="Create" class="btn btn-primary">
+                <i class="fas fa-plus"></i> New Order
+            </a>
+        </div>
+
+        <div class="table-responsive">
+            <table class="data-table">
+                <thead>
+                    <tr>
+                        <th>Order ID</th>
+                        <th>Customer</th>
+                        <th>Appliance</th>
+                        <th>Service Date</th>
+                        <th>Status</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @if (Model != null && Model.Any())
+                    {
+                        foreach (var order in Model)
+                        {
+                            <tr>
+                                <td>#@order.Id</td>
+                                <td>@order.Id</td>
+                                <td>@order.ProductId - @order.RepairType</td>
+                                <td>@order.OrderStatus</td>
+                                <td>
+                                    <span class="status-badge @order.OrderStatus</span>
+                                </td>
+                                <td class="actions">
+                                    <a asp-action="Details" asp-route-id="@order.Id" class="btn-icon" title="View Details">
+                                        <i class="fas fa-eye"></i>
+                                    </a>
+                                    <a asp-action="Update" asp-route-id="@order.Id" class="btn-icon" title="Edit">
+                                        <i class="fas fa-edit"></i>
+                                    </a>
+                                    <button type="button" class="btn-icon delete-btn" data-id="@order.Id" title="Delete">
+                                        <i class="fas fa-trash-alt"></i>
+                                    </button>
+                                </td>
+                            </tr>
+                        }
+                    }
+                    else
+                    {
+                        <tr>
+                            <td colspan="6" class="no-results">No orders found</td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+
+        <div class="pagination">
+            <a href="#" class="page-link disabled"><i class="fas fa-chevron-left"></i></a>
+            <a href="#" class="page-link active">1</a>
+            <a href="#" class="page-link">2</a>
+            <a href="#" class="page-link">3</a>
+            <a href="#" class="page-link"><i class="fas fa-chevron-right"></i></a>
+        </div>
+    </div>
+</section>

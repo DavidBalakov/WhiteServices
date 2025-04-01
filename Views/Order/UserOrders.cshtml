@@ -1,0 +1,108 @@
+<div class="row">
+    <div class="d-flex justify-content-center col-12">
+        <h1>Моите поръчки</h1>
+    </div>
+</div>
+<div class="row">
+    
+</div>
+<div class="row">
+    <div class="col-12">
+        <div class="card mt-5 border-primary shadow-sm">
+            <div class="card-body p-0">
+                <div class="table-responsive">
+                     <table id="patients-table" class="table table-striped table-dark">
+                        <thead>
+                            <tr class="top-table">
+                                <th>Име на клиента</th>
+                                <th>Модел на продукта</th>
+                                <th>Марка на продукта</th>
+                                <th>Дата на регистрация</th>
+                                <th>Тип поправка</th>
+                                <th>Статус на поръчката</th>
+                                <th>Бележки</th>
+                            </tr>
+                            <tr>
+                                <th></th>
+                                <th></th>
+                                <th></th>
+                                <th></th>
+                                <th></th>
+                                <th></th>
+                                <th></th>
+                            </tr>
+                        </thead>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script src="~/js/datatables/datatables.min.js"></script>
+    <script>
+        function loadDataTable() {
+            $("#patients-table").DataTable({
+                processing: true,
+                ordering: true,
+                paging: true,
+                pageLength: 5,
+                bSortCellsTop: true,
+                sDom: 'tp', // remove default search box: https://stackoverflow.com/questions/29769968/remove-default-search-box-and-add-custom-one-in-jquery-datatable
+                ajax: {
+                    url: '/Order/GetUser'
+                },
+                language: {
+                    sEmptyTable: "Няма намерени резултати",
+                    oAria: {
+                        sSortAscending: ": Активирайте дисплея във възходящ ред",
+                        sSortDescending: ": Активирайте дисплея в низходящ ред"
+                    }
+                },
+                initComplete: function () {
+                    this.api()
+                        .columns([0, 1, 2])
+                        .every(function () {
+                            let column = this;
+                            let title = column.header(0).textContent;
+
+                            //Create input element
+                            let input = document.createElement('input');
+                            input.style.width = '100%';
+                            input.placeholder = title;
+                            column.header(1).replaceChildren(input);
+
+                            //Event listener for user input
+                            input.addEventListener('keyup', () => {
+                                if (column.search() !== this.value)
+                                    column.search(input.value).draw();
+                            });
+                        });
+                },
+                columnDefs: [
+                    // Center align the header content of column 1
+                    { className: "dt-head-center", targets: [0, 1] },
+                    // Center align the body content of columns 0, 1
+                    { className: "dt-body-right", targets: [0, 1] }
+                ],
+                columns: [
+                    { data: 'clientName', width: '45%' },
+                    { data: 'productBrand', width: '45%' },
+                    { data: 'productModel', width: '45%' },
+                    { data: 'registrationDate', width: '45%', orderable: true },
+                    { data: 'repairType', width: '45%' },
+                    { data: 'orderStatus', width: '45%' },
+                    { data: 'additionalNotes', width: '45%', defaultContent: '' },
+                    
+                    
+                ]
+            }
+            );
+        }
+
+        $(document).ready(function () {
+            loadDataTable();
+        });
+    </script>
+}

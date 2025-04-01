@@ -1,0 +1,9 @@
+﻿@model Diploma.Models.ViewModels.Products.ProductViewModel
+
+@Html.Partial("_Form", Model)
+@* Sections do not work in partial views and that is by design. *@
+@section Scripts {
+    @{
+        <partial name="_ValidationScriptsPartial.cshtml" />
+    }
+}

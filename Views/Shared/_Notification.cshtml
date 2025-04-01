@@ -1,0 +1,16 @@
+<link rel="stylesheet" href="~/lib/node_modules/toastr/build/toastr.min.css" asp-append-version="true">
+<script src="~/lib/node_modules/toastr/build/toastr.min.js"></script>
+
+    @if (TempData["SuccessLogin"] != null)
+    {
+        <script>
+            toastr.success('@TempData["SuccessLogin"]');
+        </script>
+    }
+
+    @if (TempData["FailedLogin"] != null)
+    {
+        <script>
+            toastr.error('@TempData["FailedLogin"]');
+        </script>
+    }

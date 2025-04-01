@@ -1,0 +1,75 @@
+﻿@using Diploma.Entities
+@model Diploma.Models.ViewModels.OrderViewModel
+
+<div class="row justify-content-center">
+    <div class="col-10">
+        <div class="card mt-2">
+            <div class="card-header text-white bg-primary">
+                <h2>@(Model.Id != null ? $"Редактирай продукт: {Model.RepairType}" : "Създай продукт")</h2>
+            </div>
+            <div class="card-body">
+                <form asp-controller="Order" asp-action="@(Model.Id != null ? "Update" : "Create")" method="post"
+                    enctype="multipart/form-data">
+                    <input type="hidden" asp-for="Id" />
+
+                    <div asp-validation-summary="All"></div>
+
+                    <div class="row">
+                        <div class="col-8">
+                            <div class="row mb-2">
+                                @if (Model.Id == null)
+                                {
+                                    <div class="col-6">
+
+                                        <label>Product</label>
+                                        <select asp-for="ProductId" asp-items="@ViewBag.Products" class="form-control">
+                                            <option disabled selected>--Избери product--</option>
+                                        </select>
+                                        <span asp-validation-for="RepairType" class="text-danger"></span>
+                                    </div>
+                                }
+                                <div class="col-6">
+                                    <label asp-for="RepairType"></label>
+                                    <select asp-for="RepairType"
+                                        asp-items="@(new SelectList(Enum.GetValues(typeof(RepairType)), "RepairType"))"
+                                        class="form-control">
+                                        <option disabled selected>--Избери категория--</option>
+                                    </select>
+                                    <span asp-validation-for="RepairType" class="text-danger"></span>
+                                </div>
+                                @if (Model.Id != null)
+                                {
+                                    <div class="col-6">
+                                        <div class="col-6"></div>
+                                        <label asp-for="OrderStatus"></label>
+                                        <select asp-for="OrderStatus"
+                                            asp-items="@(new SelectList(Enum.GetValues(typeof(OrderStatus)), "OrderStatus"))"
+                                            class="form-control">
+                                            <option disabled selected>--Избери статус--</option>
+                                        </select>
+                                        <span asp-validation-for="OrderStatus" class="text-danger"></span>
+                                    </div>
+                                    <div class="col-6">
+                                        <label asp-for="AdditionalNotes"></label>
+                                        <textarea asp-for="AdditionalNotes"></textarea>
+                                        <span asp-validation-for="AdditionalNotes" class="text-danger"></span>
+                                    </div>
+                                }
+                            </div>
+                        </div>
+
+                        <div class="row justify-content-center mt-5">
+                            <div class="col-4">
+                                <button type="submit" class="btn btn-primary form-control">@(Model.Id != null ?
+                                                                        "Редактирай" : "Създай")</ button>
+                            </div>
+                            <div class="col-4">
+                                <a asp-controller="Order" asp-action="Index"
+                                    class="btn btn-outline-secondary form-control">Към списъка</a>
+                            </div>
+                        </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>

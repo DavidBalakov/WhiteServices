@@ -1,0 +1,14 @@
+﻿.table {
+    --bs-table-bg: #01030657 !important;
+}
+
+th {
+    color: whitesmoke !important;
+}
+.footer-icons{
+    transition: 0.2s ease-in-out;
+
+}
+.footer-icons:hover{
+    transform : translateY(-5px);
+}
