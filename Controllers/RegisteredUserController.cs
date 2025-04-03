@@ -17,7 +17,6 @@ namespace Products.Controllers
         {
             return View();
         }
-
         [HttpPost]
         public async Task<IActionResult> Register(RegisterViewModel registerRequest)
         {
@@ -61,7 +60,6 @@ namespace Products.Controllers
             return RedirectToAction("Index", "Home");
         }
 
-        // Change role method
         [HttpPost]
         [Authorize(Roles = "Admin")]
         public async Task<IActionResult> ChangeRole(string userId, string newRole)

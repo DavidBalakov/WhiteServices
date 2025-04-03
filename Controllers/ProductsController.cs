@@ -113,14 +113,10 @@ namespace Diploma.Controllers
             string urlQuery = _httpContextAccessor.HttpContext.Request.QueryString.Value;
             var paramsCollection = HttpUtility.ParseQueryString(urlQuery);
 
-            //Get search params
             string? SerialNumber = paramsCollection["columns[0][search][value]"];
             string? Brand = paramsCollection["columns[1][search][value]"];
             string? Model = paramsCollection["columns[2][search][value]"];
 
-            // string? defaultOrder = paramsCollection["columns[1][search][value]"];
-
-            //Get sort
             string? sortColumnIndex = paramsCollection["order[0][column]"];
             string? sortColumnName = paramsCollection["columns[" + sortColumnIndex + "][data]"];
             string? sortDirection = paramsCollection["order[0][dir]"];
@@ -151,14 +147,10 @@ namespace Diploma.Controllers
             string urlQuery = _httpContextAccessor.HttpContext.Request.QueryString.Value;
             var paramsCollection = HttpUtility.ParseQueryString(urlQuery);
 
-            //Get search params
             string? SerialNumber = paramsCollection["columns[0][search][value]"];
             string? Brand = paramsCollection["columns[1][search][value]"];
             string? Model = paramsCollection["columns[2][search][value]"];
 
-            // string? defaultOrder = paramsCollection["columns[1][search][value]"];
-
-            //Get sort
             string? sortColumnIndex = paramsCollection["order[0][column]"];
             string? sortColumnName = paramsCollection["columns[" + sortColumnIndex + "][data]"];
             string? sortDirection = paramsCollection["order[0][dir]"];

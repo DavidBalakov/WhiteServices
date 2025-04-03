@@ -93,7 +93,6 @@
     </div>
 </div>
 
-<!-- Delete User Modal -->
 <div class="modal fade" id="deleteUserModal" tabindex="-1" aria-labelledby="deleteUserModalLabel" aria-hidden="true">
     <div class="modal-dialog">
         <div class="modal-content">
@@ -115,7 +114,6 @@
 @section Scripts {
     <script>
         $(document).ready(function() {
-            // Search functionality
             $("#userSearch").on("keyup", function() {
                 var value = $(this).val().toLowerCase();
                 $("#usersTable tbody tr").filter(function() {
@@ -123,7 +121,6 @@
                 });
             });
             
-            // Handle delete modal
             var deleteUserModal = document.getElementById('deleteUserModal');
             if (deleteUserModal) {
                 deleteUserModal.addEventListener('show.bs.modal', function(event) {
@@ -134,7 +131,6 @@
                 });
             }
             
-            // Initialize tooltips
             var tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'));
             var tooltipList = tooltipTriggerList.map(function (tooltipTriggerEl) {
                 return new bootstrap.Tooltip(tooltipTriggerEl);

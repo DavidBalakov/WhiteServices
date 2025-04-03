@@ -10,7 +10,6 @@ namespace Diploma.Models.ViewModels
         [Required(ErrorMessage = "Задължително")]
         public string? ProductModel { get; set; }
         public string? ProductBrand { get; set; }
-        public string? ClientName { get; set; }
         public string RegistrationDate { get; set; }
         public RepairType RepairType { get; set; }
         public string? AdditionalNotes { get; set; }

@@ -11,10 +11,6 @@ namespace Diploma.Models.ViewModels
         public string Email { get; set; }
         [Required(ErrorMessage = "Паролата е задължителна")]
         public string Password { get; set; }
-        // [Compare("Password", ErrorMessage = "Паролите не съвпадат")]
-        // [Required(ErrorMessage = "Потвърдете паролата")]
-        // public string ConfirmPassword { get; set; }
-
         [Required(ErrorMessage = "Личното име е задължително")]
         public string FirstName { get; set; }
         [Required(ErrorMessage = "Фамилното име е задължително")]

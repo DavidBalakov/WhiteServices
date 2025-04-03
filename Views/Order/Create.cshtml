@@ -1,4 +1,4 @@
-﻿@model Diploma.Models.ViewModels.OrderViewModel
+@model Diploma.Models.ViewModels.OrderViewModel
 
 @{
     ViewData["Title"] = "Create Order";
@@ -34,11 +34,11 @@
                     </div>
                     <div class="col-md-6">
                         <div class="mb-3">
-                            <label asp-for="ProductId" class="form-label">Product</label>
-                            <select asp-for="ProductId" asp-items="ViewBag.Products" class="form-select">
+                            <label asp-for="Id" class="form-label">Product</label>
+                            <select asp-for="Id" asp-items="ViewBag.Products" class="form-select">
                                 <option disabled selected>--Select Product--</option>
                             </select>
-                            <span asp-validation-for="ProductId" class="text-danger"></span>
+                            <span asp-validation-for="Id" class="text-danger"></span>
                         </div>
                     </div>
                 </div>
@@ -108,7 +108,6 @@
     @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
     
     <script>
-        // Populate product details when a product is selected
         $(document).ready(function() {
             $('#ProductId').change(function() {
                 var productId = $(this).val();

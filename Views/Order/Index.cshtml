@@ -1,4 +1,4 @@
-﻿@{
+@{
     ViewData["Title"] = "Orders";
 }
 
@@ -143,7 +143,6 @@
     </div>
 </div>
 
-<!-- Delete Order Modal -->
 <div class="modal fade" id="deleteOrderModal" tabindex="-1" aria-labelledby="deleteOrderModalLabel" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered">
         <div class="modal-content">
@@ -167,7 +166,6 @@
 @section Scripts {
     <script>
         $(document).ready(function() {
-            // Search functionality
             $("#orderSearch").on("keyup", function() {
                 var value = $(this).val().toLowerCase();
                 var visibleCount = 0;
@@ -181,7 +179,6 @@
                 $("#visibleCount").text(visibleCount);
             });
             
-            // Handle delete modal
             var deleteOrderModal = document.getElementById('deleteOrderModal');
             if (deleteOrderModal) {
                 deleteOrderModal.addEventListener('show.bs.modal', function(event) {
@@ -192,7 +189,6 @@
                 });
             }
             
-            // Initialize tooltips
             var tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'));
             var tooltipList = tooltipTriggerList.map(function (tooltipTriggerEl) {
                 return new bootstrap.Tooltip(tooltipTriggerEl);

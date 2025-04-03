@@ -55,7 +55,6 @@
                                     <td>#@order.Id</td>
                                     <td>@order.ProductBrand @order.ProductModel</td>
                                     <td>@order.RepairType</td>
-                                    @* <td>@order.RegistrationDate.ToString("dd/MM/yyyy")</td> *@
                                     <td><span class="status-badge">@order.OrderStatus</span></td>
                                     <td>
                                         <div class="btn-group btn-group-sm">
@@ -91,7 +90,6 @@
 @section Scripts {
     <script>
         $(document).ready(function () {
-            // Search functionality
             $("#orderSearch").on("keyup", function () {
                 var value = $(this).val().toLowerCase();
                 $("#userOrdersTable tbody tr").filter(function () {
@@ -99,7 +97,6 @@
                 });
             });
 
-            // Initialize tooltips
             var tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'));
             var tooltipList = tooltipTriggerList.map(function (tooltipTriggerEl) {
                 return new bootstrap.Tooltip(tooltipTriggerEl);

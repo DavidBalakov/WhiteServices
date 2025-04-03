@@ -1,13 +1,24 @@
+<<<<<<< HEAD
 D:\Users\User\Desktop\School\12D\Diploma\obj\Debug\net8.0\Diploma.csproj.AssemblyReference.cache
+=======
+>>>>>>> 6fa8649bceae9423631925b6c9382e311f30698f
 D:\Users\User\Desktop\School\12D\Diploma\obj\Debug\net8.0\Diploma.GeneratedMSBuildEditorConfig.editorconfig
 D:\Users\User\Desktop\School\12D\Diploma\obj\Debug\net8.0\Diploma.AssemblyInfoInputs.cache
 D:\Users\User\Desktop\School\12D\Diploma\obj\Debug\net8.0\Diploma.AssemblyInfo.cs
 D:\Users\User\Desktop\School\12D\Diploma\obj\Debug\net8.0\Diploma.csproj.CoreCompileInputs.cache
+<<<<<<< HEAD
 D:\Users\User\Desktop\School\12D\Diploma\obj\Debug\net8.0\Diploma.MvcApplicationPartsAssemblyInfo.cs
 D:\Users\User\Desktop\School\12D\Diploma\obj\Debug\net8.0\Diploma.MvcApplicationPartsAssemblyInfo.cache
 D:\Users\User\Desktop\School\12D\Diploma\obj\Debug\net8.0\Diploma.RazorAssemblyInfo.cache
 D:\Users\User\Desktop\School\12D\Diploma\obj\Debug\net8.0\Diploma.RazorAssemblyInfo.cs
 D:\Users\User\Desktop\School\12D\Diploma\obj\Debug\net8.0\Diploma.sourcelink.json
+=======
+D:\Users\User\Desktop\School\12D\Diploma\obj\Debug\net8.0\Diploma.MvcApplicationPartsAssemblyInfo.cache
+D:\Users\User\Desktop\School\12D\Diploma\obj\Debug\net8.0\Diploma.RazorAssemblyInfo.cache
+D:\Users\User\Desktop\School\12D\Diploma\obj\Debug\net8.0\Diploma.RazorAssemblyInfo.cs
+D:\Users\User\Desktop\School\12D\Diploma\obj\Debug\net8.0\Diploma.csproj.AssemblyReference.cache
+D:\Users\User\Desktop\School\12D\Diploma\obj\Debug\net8.0\Diploma.MvcApplicationPartsAssemblyInfo.cs
+>>>>>>> 6fa8649bceae9423631925b6c9382e311f30698f
 D:\Users\User\Desktop\School\12D\Diploma\bin\Debug\net8.0\appsettings.Development.json
 D:\Users\User\Desktop\School\12D\Diploma\bin\Debug\net8.0\appsettings.json
 D:\Users\User\Desktop\School\12D\Diploma\bin\Debug\net8.0\Diploma.staticwebassets.runtime.json

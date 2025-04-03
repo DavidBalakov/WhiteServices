@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 ﻿// site.js - Main JavaScript file for the Appliance Repair Management System
 
 document.addEventListener('DOMContentLoaded', function() {
@@ -204,3 +205,9 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     });
 });
+=======
+﻿// Please see documentation at https://learn.microsoft.com/aspnet/core/client-side/bundling-and-minification
+// for details on configuring this project to bundle and minify static web assets.
+
+// Write your JavaScript code.
+>>>>>>> 6fa8649bceae9423631925b6c9382e311f30698f
