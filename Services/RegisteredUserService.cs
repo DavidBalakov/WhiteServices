@@ -9,12 +9,10 @@ namespace Diploma.Services
     public class RegisteredUserService : IRegisteredUserService
     {
         private readonly UserManager<RegisteredUser> _userManager;
-        private readonly SignInManager<RegisteredUser> _signInManager;
         private readonly ApplicationDbContext _context;
-        public RegisteredUserService(UserManager<RegisteredUser> userManager, SignInManager<RegisteredUser> signInManager, ApplicationDbContext context)
+        public RegisteredUserService(UserManager<RegisteredUser> userManager, ApplicationDbContext context)
         {
             _userManager = userManager;
-            _signInManager = signInManager;
             _context = context;
         }
 
@@ -83,13 +81,13 @@ namespace Diploma.Services
             foreach (var user in users)
             {
                 var roles = await _userManager.GetRolesAsync(user);
-                var role = roles.FirstOrDefault() ?? "No Role"; // Get first role or default to "No Role"
+                var role = roles.FirstOrDefault() ?? "No Role";
 
                 userSearchList.Add(new RegisteredUserSearch
                 {
                     Id = user.Id,
                     UserName = user.UserName,
-                    FirstName = user.FirstName, // Ensure these properties exist in your IdentityUser model
+                    FirstName = user.FirstName,
                     LastName = user.LastName,
                     Role = role
                 });

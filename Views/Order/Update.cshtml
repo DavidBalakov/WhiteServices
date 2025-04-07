@@ -1,128 +1,84 @@
 ﻿@model Diploma.Models.ViewModels.OrderViewModel
+@using Diploma.Entities
 
 @{
-    ViewData["Title"] = "Update Order";
+    ViewData["Title"] = "Редактиране на поръчка";
 }
 
 <div class="page-header">
     <div class="container">
         <div class="row align-items-center">
             <div class="col-md-6">
-                <h1>Update Order</h1>
-                <p>Edit repair service order details</p>
-            </div>
-            <div class="col-md-6 text-md-end">
-                <a asp-action="Index" class="btn btn-light">
-                    <i class="bi bi-arrow-left me-2"></i>Back to Orders
-                </a>
+                <h1>Редактиране на поръчка</h1>
+                <p>Променете информацията за поръчката</p>
             </div>
         </div>
     </div>
 </div>
 
 <div class="container">
-    <div class="card">
-        <div class="card-header bg-primary text-white">
-            <h4 class="mb-0">Order #@Model.Id</h4>
-        </div>
-        <div class="card-body">
-            <form asp-action="Update" method="post">
-                <input type="hidden" asp-for="Id" />
-                <div asp-validation-summary="All" class="text-danger mb-3"></div>
-
-                <div class="row mb-3">
-                    <div class="col-md-6">
-                        <div class="mb-3">
-                            <label asp-for="ProductId" class="form-label">Product</label>
-                            <select asp-for="ProductId" asp-items="ViewBag.Products" class="form-select">
-                                <option disabled>--Select Product--</option>
-                            </select>
-                            <span asp-validation-for="ProductId" class="text-danger"></span>
-                        </div>
-                    </div>
+    <div class="row">
+        <div class="col-md-8 mx-auto">
+            <div class="card shadow-sm">
+                <div class="card-header bg-white py-3">
+                    <h5 class="mb-0 text-primary">Информация за поръчка #@Model.Id.Substring(0, 5)</h5>
                 </div>
-
-                <div class="row mb-3">
-                    <div class="col-md-6">
-                        <div class="mb-3">
-                            <label asp-for="ProductBrand" class="form-label">Product Brand</label>
-                            <input asp-for="ProductBrand" class="form-control" />
-                            <span asp-validation-for="ProductBrand" class="text-danger"></span>
+                <div class="card-body">
+                    <form asp-action="Update" method="post">
+                        <div asp-validation-summary="ModelOnly" class="text-danger mb-3"></div>
+                        
+                        <input type="hidden" asp-for="Id" />
+                        <input type="hidden" asp-for="ProductId" />
+                        <input type="hidden" asp-for="RegistrationDate" />
+                        
+                        <div class="row mb-3">
+                            <div class="col-md-6">
+                                <label class="form-label">Продукт</label>
+                                <input type="text" class="form-control" value="@Model.ProductBrand @Model.ProductModel" readonly />
+                            </div>
+                            <div class="col-md-6">
+                                <label class="form-label">Дата на регистрация</label>
+                                <input type="text" class="form-control" value="@DateTime.Parse(Model.RegistrationDate).ToString("dd.MM.yyyy")" readonly />
+                            </div>
                         </div>
-                    </div>
-                    <div class="col-md-6">
+                        
                         <div class="mb-3">
-                            <label asp-for="ProductModel" class="form-label">Product Model</label>
-                            <input asp-for="ProductModel" class="form-control" />
-                            <span asp-validation-for="ProductModel" class="text-danger"></span>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="row mb-3">
-                    <div class="col-md-6">
-                        <div class="mb-3">
-                            <label asp-for="RepairType" class="form-label">Repair Type</label>
-                            <select asp-for="RepairType" class="form-select">
-                                <option value="Maintenance">Maintenance</option>
-                                <option value="Repair">Repair</option>
-                                <option value="Installation">Installation</option>
-                                <option value="Inspection">Inspection</option>
+                            <label asp-for="RepairType" class="form-label">Тип ремонт</label>
+                            <select asp-for="RepairType" class="form-select" asp-items="Html.GetEnumSelectList<RepairType>()">
+                                <option value="">-- Изберете тип ремонт --</option>
                             </select>
                             <span asp-validation-for="RepairType" class="text-danger"></span>
                         </div>
-                    </div>
-                    <div class="col-md-6">
+                        
                         <div class="mb-3">
-                            <label asp-for="OrderStatus" class="form-label">OrderStatus</label>
-                            <select asp-for="OrderStatus" class="form-select">
-                                <option value="Чакащ">Pending</option>
-                                <option value="В процес">In Progress</option>
-                                <option value="Завършен">Completed</option>
-                                <option value="Отказан">Cancelled</option>
+                            <label asp-for="OrderStatus" class="form-label">Статус на поръчката</label>
+                            <select asp-for="OrderStatus" class="form-select" asp-items="Html.GetEnumSelectList<OrderStatus>()">
+                                <option value="">-- Изберете статус --</option>
                             </select>
                             <span asp-validation-for="OrderStatus" class="text-danger"></span>
                         </div>
-                    </div>
+                        
+                        <div class="mb-3">
+                            <label asp-for="AdditionalNotes" class="form-label">Допълнителни бележки</label>
+                            <textarea asp-for="AdditionalNotes" class="form-control" rows="4"></textarea>
+                            <span asp-validation-for="AdditionalNotes" class="text-danger"></span>
+                        </div>
+                        
+                        <div class="d-flex justify-content-between mt-4">
+                            <a href="@(User.IsInRole("Admin") || User.IsInRole("Employee") ? "/Order/Orders" : "/Order/UserOrders")" class="btn btn-outline-secondary">
+                                <i class="bi bi-arrow-left me-2"></i>Отказ
+                            </a>
+                            <button type="submit" class="btn btn-primary">
+                                <i class="bi bi-check-circle me-2"></i>Запази промените
+                            </button>
+                        </div>
+                    </form>
                 </div>
-
-                <div class="mb-3">
-                    <label asp-for="AdditionalNotes" class="form-label">Notes</label>
-                    <textarea asp-for="AdditionalNotes" class="form-control" rows="3"></textarea>
-                    <span asp-validation-for="AdditionalNotes" class="text-danger"></span>
-                </div>
-
-                <div class="d-flex justify-content-end">
-                    <a asp-action="Index" class="btn btn-secondary me-2">Cancel</a>
-                    <button type="submit" class="btn btn-primary">
-                        <i class="bi bi-save me-2"></i>Update Order
-                    </button>
-                </div>
-            </form>
+            </div>
         </div>
     </div>
 </div>
 
 @section Scripts {
-    @{
-        await Html.RenderPartialAsync("_ValidationScriptsPartial");
-    }
-
-    <script>
-        $(document).ready(function () {
-            $('#ProductId').change(function () {
-                var productId = $(this).val();
-                if (productId) {
-                    $.ajax({
-                        url: '@Url.Action("GetProductDetails", "Order")/' + productId,
-                        type: 'GET',
-                        success: function (data) {
-                            $('#ProductBrand').val(data.brand);
-                            $('#ProductModel').val(data.model);
-                        }
-                    });
-                }
-            });
-        });
-    </script>
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
 }

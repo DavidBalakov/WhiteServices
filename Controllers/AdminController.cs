@@ -1,130 +1,164 @@
 using Microsoft.AspNetCore.Mvc;
-using Diploma.Models.ViewModels;
-using Diploma.Services;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Identity;
 using Diploma.Entities;
-using System.Web;
+using Diploma.Models.ViewModels;
 using Diploma.DTO;
 
-namespace Diploma.Controllers;
-
-public class AdminController : Controller
+namespace Diploma.Controllers
 {
-    private readonly IEmployeeService _employeeService;
-    private readonly IRegisteredUserService _userService;
-    private IHttpContextAccessor _httpContextAccessor;
-    public AdminController(IEmployeeService employeeService, IRegisteredUserService userService, IHttpContextAccessor httpContextAccessor)
+    [Authorize(Roles = "Admin")]
+    public class AdminController : Controller
     {
-        _employeeService = _employeeService;
-        _userService = userService;
-        _httpContextAccessor = httpContextAccessor;
-    }
-    public IActionResult AdminPanel()
-    {
-        return View();
-    }
+        private readonly UserManager<RegisteredUser> _userManager;
+        private readonly RoleManager<IdentityRole> _roleManager;
 
-    public IActionResult AddEmployee()
-    {
-        return View();
-    }
-    [HttpPost]
-    public async Task<IActionResult> AddEmployee(RegisterViewModel employeeViewModel)
-    {
-        if (ModelState.IsValid)
+        public AdminController(
+            UserManager<RegisteredUser> userManager,
+            RoleManager<IdentityRole> roleManager)
         {
-
-            var result = await _employeeService.RegisterEmployee(employeeViewModel);
-            if (result)
-            {
-                return RedirectToAction("Index", "Home");
-            }
-            TempData["error"] = "Потребителското име вече се използва!";
+            _userManager = userManager;
+            _roleManager = roleManager;
         }
-        return View(employeeViewModel);
-    }
 
-    public IActionResult Employees()
-    {
-        return View();
-    }
-    [HttpGet]
-    public async Task<IActionResult> EditEmployee(string id)
-    {
-        RegisteredUser employee = _employeeService.Get(id);
-
-        RegisterViewModel employeeViewModel = new RegisterViewModel
+        public IActionResult AllUsers()
         {
-            Email = employee.Email,
-            FirstName = employee.FirstName,
-            LastName = employee.LastName,
-            Password = employee.Password,
-            PhoneNumber = employee.PhoneNumber,
-            UserId = employee.Id,
-            UserName = employee.UserName,
-            Role = await _userService.GetUserRole(employee.Id)
-        };
+            return View();
+        }
 
-        return View(employeeViewModel);
-    }
-    [HttpGet]
-    public async Task<IActionResult> Delete(string id)
-    {
-        await _userService.DeleteAsync(id);
-        return RedirectToAction("Users", "Admin");
-    }
-    [HttpPost]
-    public async Task<IActionResult> EditEmployee(RegisterViewModel employeeViewModel)
-    {
-        await _employeeService.EditAsync(employeeViewModel);
-        return RedirectToAction("Users", "Admin");
-    }
-    public IActionResult AllUsers()
-    {
-        return View();
-    }
-    public async Task<IActionResult> GetUser(int draw, int start, int length)
-    {
-        string urlQuery = _httpContextAccessor.HttpContext.Request.QueryString.Value;
-        var paramsCollection = HttpUtility.ParseQueryString(urlQuery);
-
-        //Get search params
-        string? UserName = paramsCollection["columns[0][search][value]"];
-        string? FirstName = paramsCollection["columns[1][search][value]"];
-        string? LastName = paramsCollection["columns[2][search][value]"];
-        string? Role = paramsCollection["columns[3][search][value]"];
-
-        // string? defaultOrder = paramsCollection["columns[1][search][value]"];
-
-        //Get sort
-        string? sortColumnIndex = paramsCollection["order[0][column]"];
-        string? sortColumnName = paramsCollection["columns[" + sortColumnIndex + "][data]"];
-        string? sortDirection = paramsCollection["order[0][dir]"];
-        string sortColumn = "";
-
-        RegisteredUserSearch searchModel = new RegisteredUserSearch();
-        searchModel.UserName = UserName;
-        searchModel.FirstName = FirstName;
-        searchModel.LastName = LastName;
-        searchModel.Role = Role;
-
-        if (sortDirection == "asc")
-            sortColumn = sortColumnName;
-        else
-            sortColumn = $"-{sortColumnName}";
-
-        SearchResult<RegisteredUserSearch> result = await _userService.Search(searchModel, sortColumn, start, length);
-
-        return Ok(new
+        [HttpGet]
+        public async Task<IActionResult> GetUsers([FromQuery] RegisteredUserSearch search, int start = 0, int length = 10)
         {
-            draw = draw,
-            recordsTotal = result.RecordsTotal,
-            recordsFiltered = result.RecordsFiltered,
-            data = result.Data
-        });
-    }
-    public async Task<IActionResult> ChangeRole(string id)
-    {
-        await _userService.ChangeRole(id);
-        return RedirectToAction("AllUsers");
+            try
+            {
+                var users = _userManager.Users.AsQueryable();
+                
+                // Apply filters if provided
+                if (!string.IsNullOrEmpty(search.UserName))
+                {
+                    users = users.Where(u => u.UserName.Contains(search.UserName));
+                }
+                
+                if (!string.IsNullOrEmpty(search.FirstName))
+                {
+                    users = users.Where(u => u.FirstName.Contains(search.FirstName));
+                }
+                
+                if (!string.IsNullOrEmpty(search.LastName))
+                {
+                    users = users.Where(u => u.LastName.Contains(search.LastName));
+                }
+                
+                var totalCount = users.Count();
+                
+                // Apply pagination
+                var pagedUsers = users
+                    .Skip(start)
+                    .Take(length)
+                    .ToList();
+                
+                var userViewModels = new List<UserViewModel>();
+                
+                foreach (var user in pagedUsers)
+                {
+                    var roles = await _userManager.GetRolesAsync(user);
+                    
+                    // Filter by role if provided
+                    if (!string.IsNullOrEmpty(search.Role) && !roles.Contains(search.Role))
+                    {
+                        continue;
+                    }
+                    
+                    var userViewModel = new UserViewModel
+                    {
+                        Id = user.Id,
+                        UserName = user.UserName,
+                        Email = user.Email,
+                        FirstName = user.FirstName,
+                        LastName = user.LastName,
+                        PhoneNumber = user.PhoneNumber,
+                        Roles = roles.ToList()
+                    };
+                    
+                    userViewModels.Add(userViewModel);
+                }
+                
+                var result = new SearchResult<UserViewModel>
+                {
+                    RecordsTotal = totalCount,
+                    RecordsFiltered = userViewModels.Count,
+                    Start = start,
+                    TotalPages = (int)Math.Ceiling((double)totalCount / length),
+                    Data = userViewModels
+                };
+                
+                return Json(result);
+            }
+            catch (Exception ex)
+            {
+                // Log the exception
+                Console.WriteLine($"Error getting users: {ex.Message}");
+                return Json(new SearchResult<UserViewModel>
+                {
+                    RecordsTotal = 0,
+                    RecordsFiltered = 0,
+                    Start = start,
+                    TotalPages = 0,
+                    Data = new List<UserViewModel>()
+                });
+            }
+        }
+
+        [HttpGet]
+        public async Task<IActionResult> GetAvailableRoles()
+        {
+            var roles = _roleManager.Roles.Select(r => r.Name).ToList();
+            return Json(roles);
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> UpdateUserRole(string userId, string role, bool isAdd)
+        {
+            try
+            {
+                var user = await _userManager.FindByIdAsync(userId);
+                if (user == null)
+                {
+                    return Json(new { success = false, message = "Потребителят не е намерен." });
+                }
+
+                if (isAdd)
+                {
+                    // Add role
+                    if (!await _userManager.IsInRoleAsync(user, role))
+                    {
+                        var result = await _userManager.AddToRoleAsync(user, role);
+                        if (!result.Succeeded)
+                        {
+                            return Json(new { success = false, message = "Грешка при добавяне на роля." });
+                        }
+                    }
+                }
+                else
+                {
+                    // Remove role
+                    if (await _userManager.IsInRoleAsync(user, role))
+                    {
+                        var result = await _userManager.RemoveFromRoleAsync(user, role);
+                        if (!result.Succeeded)
+                        {
+                            return Json(new { success = false, message = "Грешка при премахване на роля." });
+                        }
+                    }
+                }
+
+                return Json(new { success = true });
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Error updating user role: {ex.Message}");
+                return Json(new { success = false, message = "Възникна грешка при обновяване на ролята." });
+            }
+        }
     }
 }

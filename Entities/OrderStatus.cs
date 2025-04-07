@@ -8,5 +8,6 @@ namespace Diploma.Entities
         [Display(Name = "В процес на изпълнение")]
         Незавършена,
         Завършена,
+        Отказана
     }
 }

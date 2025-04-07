@@ -8,12 +8,12 @@
     <div class="container">
         <div class="row align-items-center">
             <div class="col-md-6">
-                <h1>Create New Worker</h1>
-                <p>Add a new technician to the system</p>
+                <h1>Добави нов служител</h1>
+                <p>Добави нов служител в системата</p>
             </div>
             <div class="col-md-6 text-md-end">
                 <a href="/RegisteredUser/Index" class="btn btn-light">
-                    <i class="bi bi-arrow-left me-2"></i>Back to Users
+                    <i class="bi bi-arrow-left me-2"></i>Назад към потребителите
                 </a>
             </div>
         </div>
@@ -25,7 +25,7 @@
         <div class="col-md-8">
             <div class="card">
                 <div class="card-header bg-primary text-white">
-                    <h4 class="mb-0">Worker Registration Form</h4>
+                    <h4 class="mb-0">Регистрация на служител</h4>
                 </div>
                 <div class="card-body">
                     <form action="/RegisteredUser/CreateWorker" method="post">
@@ -35,14 +35,14 @@
                         <div class="row mb-3">
                             <div class="col-md-6">
                                 <div class="mb-3">
-                                    <label asp-for="UserName" class="form-label">Username</label>
+                                    <label asp-for="UserName" class="form-label">Потребителско име</label>
                                     <input asp-for="UserName" class="form-control" />
                                     <span asp-validation-for="UserName" class="text-danger"></span>
                                 </div>
                             </div>
                             <div class="col-md-6">
                                 <div class="mb-3">
-                                    <label asp-for="Email" class="form-label">Email</label>
+                                    <label asp-for="Email" class="form-label">Имейл</label>
                                     <input asp-for="Email" class="form-control" />
                                     <span asp-validation-for="Email" class="text-danger"></span>
                                 </div>
@@ -52,14 +52,14 @@
                         <div class="row mb-3">
                             <div class="col-md-6">
                                 <div class="mb-3">
-                                    <label asp-for="FirstName" class="form-label">First Name</label>
+                                    <label asp-for="FirstName" class="form-label">Собствено име</label>
                                     <input asp-for="FirstName" class="form-control" />
                                     <span asp-validation-for="FirstName" class="text-danger"></span>
                                 </div>
                             </div>
                             <div class="col-md-6">
                                 <div class="mb-3">
-                                    <label asp-for="LastName" class="form-label">Last Name</label>
+                                    <label asp-for="LastName" class="form-label">Фамилия</label>
                                     <input asp-for="LastName" class="form-control" />
                                     <span asp-validation-for="LastName" class="text-danger"></span>
                                 </div>
@@ -67,7 +67,7 @@
                         </div>
                         
                         <div class="mb-3">
-                            <label asp-for="PhoneNumber" class="form-label">Phone Number</label>
+                            <label asp-for="PhoneNumber" class="form-label">Телефонен номер</label>
                             <input asp-for="PhoneNumber" class="form-control" />
                             <span asp-validation-for="PhoneNumber" class="text-danger"></span>
                         </div>
@@ -75,7 +75,7 @@
                         <div class="row mb-3">
                             <div class="col-md-6">
                                 <div class="mb-3">
-                                    <label asp-for="Password" class="form-label">Password</label>
+                                    <label asp-for="Password" class="form-label">Парола</label>
                                     <input asp-for="Password" class="form-control" type="password" />
                                     <span asp-validation-for="Password" class="text-danger"></span>
                                 </div>
@@ -83,9 +83,9 @@
                         </div>
                         
                         <div class="d-flex justify-content-end">
-                            <a href="/RegisteredUser/Index" class="btn btn-secondary me-2">Cancel</a>
+                            <a href="/RegisteredUser/Index" class="btn btn-secondary me-2">Отмяна</a>
                             <button type="submit" class="btn btn-primary">
-                                <i class="bi bi-person-plus me-2"></i>Create Worker
+                                <i class="bi bi-person-plus me-2"></i>Добави служител
                             </button>
                         </div>
                     </form>

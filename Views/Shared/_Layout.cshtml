@@ -1,140 +1,112 @@
 ﻿<!DOCTYPE html>
-<html lang="en">
+<html lang="bg">
 <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>@ViewData["Title"] - Appliance Repair Management</title>
-    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
+    <title>@ViewData["Title"] - Система за управление на ремонти</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/css/bootstrap.min.css" />
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.3/font/bootstrap-icons.css">
     <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css">
 </head>
 <body>
-    <header class="navbar navbar-expand-lg navbar-dark bg-primary sticky-top">
-        <div class="container">
-            <a class="navbar-brand d-flex align-items-center" href="/">
-                <i class="bi bi-tools me-2"></i>
-                <span>RepairPro</span>
-            </a>
-            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarMain" 
-                    aria-controls="navbarMain" aria-expanded="false" aria-label="Toggle navigation">
-                <span class="navbar-toggler-icon"></span>
-            </button>
-            <div class="collapse navbar-collapse" id="navbarMain">
-                <ul class="navbar-nav me-auto mb-2 mb-lg-0">
-                    <li class="nav-item">
-                        <a class="nav-link @(ViewContext.RouteData.Values["controller"].ToString() == "Home" && ViewContext.RouteData.Values["action"].ToString() == "Index" ? "active" : "")" 
-                           href="/">Dashboard</a>
-                    </li>
-                    <li class="nav-item dropdown">
-                        <a class="nav-link dropdown-toggle @(ViewContext.RouteData.Values["controller"].ToString() == "Products" ? "active" : "")" 
-                           href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-                            Products
-                        </a>
-                        <ul class="dropdown-menu">
-                            <li><a class="dropdown-item" href="/Products/Products">All Products</a></li>
-                            <li><a class="dropdown-item" href="/Products/UserProducts">My Products</a></li>
-                            <li><hr class="dropdown-divider"></li>
-                            <li><a class="dropdown-item" href="/Products/Create">Add New Product</a></li>
-                        </ul>
-                    </li>
-                    <li class="nav-item dropdown">
-                        <a class="nav-link dropdown-toggle @(ViewContext.RouteData.Values["controller"].ToString() == "Order" ? "active" : "")" 
-                           href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-                            Orders
-                        </a>
-                        <ul class="dropdown-menu">
-                            <li><a class="dropdown-item" href="/Order/Index">All Orders</a></li>
-                            <li><a class="dropdown-item" href="/Order/UserOrders">My Orders</a></li>
-                            <li><hr class="dropdown-divider"></li>
-                            <li><a class="dropdown-item" href="/Order/Create">Create New Order</a></li>
-                        </ul>
-                    </li>
-                    @if (User.Identity.IsAuthenticated && User.IsInRole("Admin"))
-                    {
+    <header>
+        <nav class="navbar navbar-expand-lg navbar-light bg-white">
+            <div class="container">
+                <a class="navbar-brand" href="/">
+                    <i class="bi bi-tools me-2"></i>
+                    Ремонт на уреди
+                </a>
+                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav"
+                    aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+                    <span class="navbar-toggler-icon"></span>
+                </button>
+                <div class="collapse navbar-collapse" id="navbarNav">
+                    <ul class="navbar-nav me-auto">
                         <li class="nav-item">
-                            <a class="nav-link @(ViewContext.RouteData.Values["controller"].ToString() == "Admin" ? "active" : "")" 
-                               href="/Admin/AllUsers">Users</a>
+                            <a class="nav-link" href="/">Начало</a>
                         </li>
-                    }
-                </ul>
-                <div class="d-flex">
-                    @if (User.Identity != null && User.Identity.IsAuthenticated)
-                    {
-                        <div class="dropdown">
-                            <button class="btn btn-light dropdown-toggle" type="button" id="userDropdown" data-bs-toggle="dropdown" aria-expanded="false">
-                                <i class="bi bi-person-circle me-1"></i> @User.Identity.Name
-                            </button>
-                            <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="userDropdown">
-                                <li><a class="dropdown-item" href="#"><i class="bi bi-gear me-2"></i>Settings</a></li>
-                                <li><a class="dropdown-item" href="#"><i class="bi bi-person me-2"></i>Profile</a></li>
-                                <li><hr class="dropdown-divider"></li>
-                                <li>
-                                    <form action="/RegisteredUser/LogOut" method="post">
-                                        @Html.AntiForgeryToken()
-                                        <button type="submit" class="dropdown-item">
-                                            <i class="bi bi-box-arrow-right me-2"></i>Logout
-                                        </button>
-                                    </form>
-                                </li>
-                            </ul>
-                        </div>
-                    }
-                    else
-                    {
-                        <a href="/RegisteredUser/LogIn" class="btn btn-light me-2">
-                            <i class="bi bi-box-arrow-in-right me-1"></i> Login
-                        </a>
-                        <a href="/RegisteredUser/Register" class="btn btn-outline-light">
-                            <i class="bi bi-person-plus me-1"></i> Register
-                        </a>
-                    }
+                        <li class="nav-item">
+                            <a class="nav-link" href="/Order/UserOrders">Поръчки</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="/Products/UserProducts">Продукти</a>
+                        </li>
+                        @if (User.IsInRole("Admin") || User.IsInRole("Employee"))
+                        {
+                            <li class="nav-item dropdown">
+                                <a class="nav-link dropdown-toggle" href="#" id="adminDropdown" role="button"
+                                   data-bs-toggle="dropdown" aria-expanded="false">
+                                    Администрация
+                                </a>
+                                <ul class="dropdown-menu" aria-labelledby="adminDropdown">
+                                    <li><a class="dropdown-item" href="/Admin/AllUsers">Потребители</a></li>
+                                    <li><a class="dropdown-item" href="/Order/Orders">Всички поръчки</a></li>
+                                    <li><a class="dropdown-item" href="/Products/Products">Всички продукти</a></li>
+                                </ul>
+                            </li>
+                        }
+                    </ul>
+                    <div class="d-flex">
+                        @if (User.Identity?.IsAuthenticated == true)
+                        {
+                            <div class="dropdown">
+                                <button class="btn btn-link nav-link dropdown-toggle" type="button" id="userDropdown" data-bs-toggle="dropdown" aria-expanded="false">
+                                    <i class="bi bi-person-circle me-1"></i>
+                                    @User.Identity?.Name
+                                </button>
+                                <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="userDropdown">
+                                    <li><a class="dropdown-item" href="/Identity/Account/Manage">Моят профил</a></li>
+                                    <li><hr class="dropdown-divider"></li>
+                                    <li>
+                                        <a class="dropdown-item" href="/RegisteredUser/LogOut">Изход</a>
+                                    </li>
+                                </ul>
+                            </div>
+                        }
+                        else
+                        {
+                            <a class="nav-link" href="/RegisteredUser/Register">Регистрация</a>
+                            <a class="nav-link ms-2" href="/RegisteredUser/LogIn">Вход</a>
+                        }
+                    </div>
                 </div>
             </div>
-        </div>
+        </nav>
     </header>
 
-    <div class="container-fluid p-0">
-        <main role="main">
-            @RenderBody()
-        </main>
-    </div>
+    <main role="main">
+        @if (TempData["SuccessMessage"] != null)
+        {
+            <div class="alert alert-success alert-dismissible fade show m-3" role="alert">
+                @TempData["SuccessMessage"]
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Затвори"></button>
+            </div>
+        }
+        
+        @if (TempData["ErrorMessage"] != null)
+        {
+            <div class="alert alert-danger alert-dismissible fade show m-3" role="alert">
+                @TempData["ErrorMessage"]
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Затвори"></button>
+            </div>
+        }
+        
+        @RenderBody()
+    </main>
 
-    <footer class="footer mt-auto py-3 bg-light">
+    <footer class="border-top py-4 mt-5 bg-light">
         <div class="container">
             <div class="row">
                 <div class="col-md-6">
-                    <p class="mb-0">&copy; @DateTime.Now.Year - Appliance Repair Management System</p>
-                </div>
-                <div class="col-md-6 text-md-end">
-                    <a href="/Home/Privacy" class="text-decoration-none me-3">Privacy</a>
-                    <a href="#" class="text-decoration-none me-3">Terms</a>
-                    <a href="#" class="text-decoration-none">Support</a>
+                    <p class="mb-0">&copy; @DateTime.Now.Year - Система за управление на ремонти</p>
                 </div>
             </div>
         </div>
     </footer>
 
-    <script src="~/lib/jquery/dist/jquery.min.js"></script>
-    <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/jquery@3.6.3/dist/jquery.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js"></script>
     <script src="~/js/site.js" asp-append-version="true"></script>
-    
-    <script>
-        document.addEventListener('DOMContentLoaded', function() {
-            var dropdownElementList = [].slice.call(document.querySelectorAll('.dropdown-toggle'));
-            var dropdownList = dropdownElementList.map(function (dropdownToggleEl) {
-                return new bootstrap.Dropdown(dropdownToggleEl);
-            });
-            
-            var tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'));
-            var tooltipList = tooltipTriggerList.map(function (tooltipTriggerEl) {
-                return new bootstrap.Tooltip(tooltipTriggerEl);
-            });
-        });
-    </script>
-    
     @await RenderSectionAsync("Scripts", required: false)
 </body>
 </html>

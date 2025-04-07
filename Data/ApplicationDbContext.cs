@@ -20,12 +20,6 @@ namespace Diploma.Data
         {
             base.OnModelCreating(modelBuilder);
 
-            modelBuilder.Entity<Order>()
-                .HasOne(o => o.Repair)
-                .WithMany(r => r.Orders)
-                .HasForeignKey(o => o.RepairId)
-                .OnDelete(DeleteBehavior.Restrict); 
-
             modelBuilder.Entity<Product>()
                 .HasOne(p => p.User)
                 .WithMany(u => u.Products)

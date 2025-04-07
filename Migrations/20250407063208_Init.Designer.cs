@@ -12,7 +12,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Diploma.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20250326081241_Init")]
+    [Migration("20250407063208_Init")]
     partial class Init
     {
         /// <inheritdoc />
@@ -30,43 +30,40 @@ namespace Diploma.Migrations
                     b.Property<string>("Id")
                         .HasColumnType("nvarchar(450)");
 
-                    b.Property<string>("AdditionalNotes")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("ClientId")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(450)");
-
                     b.Property<int>("OrderStatus")
                         .HasColumnType("int");
 
-                    b.Property<string>("ProductId")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(450)");
+                    b.Property<int>("ProductId")
+                        .HasColumnType("int");
 
-                    b.Property<DateOnly>("RegistrationDate")
-                        .HasColumnType("date");
+                    b.Property<DateTime>("RegistrationDate")
+                        .HasColumnType("datetime2");
 
-                    b.Property<string>("RepairId")
+                    b.Property<int>("RepairId")
+                        .HasColumnType("int");
+
+                    b.Property<string>("UserId")
                         .IsRequired()
                         .HasColumnType("nvarchar(450)");
 
                     b.HasKey("Id");
 
-                    b.HasIndex("ClientId");
-
                     b.HasIndex("ProductId");
 
                     b.HasIndex("RepairId");
+
+                    b.HasIndex("UserId");
 
                     b.ToTable("Orders");
                 });
 
             modelBuilder.Entity("Diploma.Entities.Product", b =>
                 {
-                    b.Property<string>("SerialNumber")
-                        .HasColumnType("nvarchar(450)");
+                    b.Property<int?>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int?>("Id"));
 
                     b.Property<string>("Brand")
                         .IsRequired()
@@ -75,7 +72,19 @@ namespace Diploma.Migrations
                     b.Property<DateOnly>("DateOfPurchase")
                         .HasColumnType("date");
 
+                    b.Property<string>("Description")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<string>("Model")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("ProductType")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("SerialNumber")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
@@ -86,7 +95,7 @@ namespace Diploma.Migrations
                     b.Property<DateOnly>("WarrantyExpirationDate")
                         .HasColumnType("date");
 
-                    b.HasKey("SerialNumber");
+                    b.HasKey("Id");
 
                     b.HasIndex("UserId");
 
@@ -172,19 +181,20 @@ namespace Diploma.Migrations
 
             modelBuilder.Entity("Diploma.Entities.Repair", b =>
                 {
-                    b.Property<string>("Id")
-                        .HasColumnType("nvarchar(450)");
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
 
-                    b.Property<string>("ProductSerialNumber")
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("AdditionalNotes")
                         .IsRequired()
-                        .HasColumnType("nvarchar(450)");
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<int>("RepairType")
                         .HasColumnType("int");
 
                     b.HasKey("Id");
-
-                    b.HasIndex("ProductSerialNumber");
 
                     b.ToTable("Repairs");
                 });
@@ -269,12 +279,10 @@ namespace Diploma.Migrations
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserLogin<string>", b =>
                 {
                     b.Property<string>("LoginProvider")
-                        .HasMaxLength(128)
-                        .HasColumnType("nvarchar(128)");
+                        .HasColumnType("nvarchar(450)");
 
                     b.Property<string>("ProviderKey")
-                        .HasMaxLength(128)
-                        .HasColumnType("nvarchar(128)");
+                        .HasColumnType("nvarchar(450)");
 
                     b.Property<string>("ProviderDisplayName")
                         .HasColumnType("nvarchar(max)");
@@ -311,12 +319,10 @@ namespace Diploma.Migrations
                         .HasColumnType("nvarchar(450)");
 
                     b.Property<string>("LoginProvider")
-                        .HasMaxLength(128)
-                        .HasColumnType("nvarchar(128)");
+                        .HasColumnType("nvarchar(450)");
 
                     b.Property<string>("Name")
-                        .HasMaxLength(128)
-                        .HasColumnType("nvarchar(128)");
+                        .HasColumnType("nvarchar(450)");
 
                     b.Property<string>("Value")
                         .HasColumnType("nvarchar(max)");
@@ -328,12 +334,6 @@ namespace Diploma.Migrations
 
             modelBuilder.Entity("Diploma.Entities.Order", b =>
                 {
-                    b.HasOne("Diploma.Entities.RegisteredUser", "Client")
-                        .WithMany()
-                        .HasForeignKey("ClientId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
                     b.HasOne("Diploma.Entities.Product", "Product")
                         .WithMany()
                         .HasForeignKey("ProductId")
@@ -341,16 +341,22 @@ namespace Diploma.Migrations
                         .IsRequired();
 
                     b.HasOne("Diploma.Entities.Repair", "Repair")
-                        .WithMany("Orders")
+                        .WithMany()
                         .HasForeignKey("RepairId")
-                        .OnDelete(DeleteBehavior.Restrict)
+                        .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.Navigation("Client");
+                    b.HasOne("Diploma.Entities.RegisteredUser", "User")
+                        .WithMany()
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
 
                     b.Navigation("Product");
 
                     b.Navigation("Repair");
+
+                    b.Navigation("User");
                 });
 
             modelBuilder.Entity("Diploma.Entities.Product", b =>
@@ -362,17 +368,6 @@ namespace Diploma.Migrations
                         .IsRequired();
 
                     b.Navigation("User");
-                });
-
-            modelBuilder.Entity("Diploma.Entities.Repair", b =>
-                {
-                    b.HasOne("Diploma.Entities.Product", "Product")
-                        .WithMany()
-                        .HasForeignKey("ProductSerialNumber")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Product");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>
@@ -429,11 +424,6 @@ namespace Diploma.Migrations
             modelBuilder.Entity("Diploma.Entities.RegisteredUser", b =>
                 {
                     b.Navigation("Products");
-                });
-
-            modelBuilder.Entity("Diploma.Entities.Repair", b =>
-                {
-                    b.Navigation("Orders");
                 });
 #pragma warning restore 612, 618
         }

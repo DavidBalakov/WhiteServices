@@ -1,5 +1,4 @@
 using Diploma.Data;
-using Diploma.DTO;
 using Diploma.Entities;
 using Diploma.Models.ViewModels;
 using Microsoft.EntityFrameworkCore;
@@ -9,137 +8,128 @@ namespace Diploma.Services
     public class OrderService : IOrderService
     {
         private readonly ApplicationDbContext _context;
-        public OrderService(ApplicationDbContext context)
+        private readonly IProductService _productService;
+
+        public OrderService(ApplicationDbContext context, IProductService productService)
         {
             _context = context;
+            _productService = productService;
         }
 
-        public async Task<bool> AddOrderAsync(OrderViewModel orderViewModel, string userId)
+        public async Task<IEnumerable<Order>> GetAllOrders()
         {
-            Repair repair = new Repair()
+            return await _context.Orders
+                .Include(o => o.Product)
+                .Include(o => o.Repair)
+                .Include(o => o.User)
+                .OrderByDescending(o => o.RegistrationDate)
+                .ToListAsync();
+        }
+
+        public async Task<IEnumerable<Order>> GetOrdersByUserId(string userId)
+        {
+            return await _context.Orders
+                .Include(o => o.Product)
+                .Include(o => o.Repair)
+                .Include(o => o.User)
+                .Where(o => o.UserId == userId)
+                .OrderByDescending(o => o.RegistrationDate)
+                .ToListAsync();
+        }
+
+        public async Task<Order> GetOrderById(string id)
+        {
+            return await _context.Orders
+                .Include(o => o.Product)
+                .Include(o => o.Repair)
+                .Include(o => o.User)
+                .FirstOrDefaultAsync(o => o.Id == id);
+        }
+
+        public async Task<string> CreateOrder(OrderViewModel model, string userId)
+        {
+            // Convert string ID to int for product
+            int productId = int.Parse(model.ProductId);
+            if (!int.TryParse(model.ProductId, out productId))
             {
-                ProductSerialNumber = orderViewModel.ProductId,
-                RepairType = orderViewModel.RepairType,
+                throw new ArgumentException("Invalid product ID format");
+            }
+
+            var product = await _productService.GetProductById(productId);
+            if (product == null)
+            {
+                throw new ArgumentException("Product not found");
+            }
+
+            var repair = new Repair
+            {
+                RepairType = model.RepairType,
+                AdditionalNotes = model.AdditionalNotes
             };
 
-            Order order = new Order()
+            var order = new Order
             {
-                ClientId = userId,
-                RepairId = repair.Id,
-                ProductId = orderViewModel.ProductId,
-                RegistrationDate = DateOnly.FromDateTime(DateTime.Now),
-                OrderStatus = OrderStatus.Незавършена,
+                Id = Guid.NewGuid().ToString(),
+                ProductId = productId,
+                UserId = userId,
+                RegistrationDate = DateTime.Now,
+                OrderStatus = OrderStatus.Незапочната,
+                Repair = repair
             };
 
-            await _context.Repairs.AddAsync(repair);
-            await _context.Orders.AddAsync(order);
+            // Save to database
+            _context.Repairs.Add(repair);
+            _context.Orders.Add(order);
             await _context.SaveChangesAsync();
-            return true;
+
+            return order.Id;
         }
 
-        public Task<string> AssignOrderAsync(string orderId, string employeeId)
+        public async Task UpdateOrder(OrderViewModel model)
         {
-            throw new NotImplementedException();
-        }
+            // Find the existing order
+            var order = await _context.Orders
+                .Include(o => o.Repair)
+                .FirstOrDefaultAsync(o => o.Id == model.Id);
 
-        public List<Order> GetAll()
-        {
-            return _context.Orders.Include(x => x.Product).Include(x => x.Client).Include(x => x.Repair).ToList();
-        }
-        public List<OrdersDTO> GetAllDTO()
-        {
-            return GetAll().Select(x => new OrdersDTO()
+            if (order == null)
             {
-                Id = x.Id,
-                ClientName = x.Client.FirstName,
-                ProductBrand = x.Product.Brand,
-                ProductModel = x.Product.Model,
-                RegistrationDate = x.RegistrationDate,
-                RepairType = x.Repair.RepairType.ToString(),
-                OrderStatus = x.OrderStatus.ToString(),
-                AdditionalNotes = x.AdditionalNotes
-            }).ToList();
-        }
-        public List<OrdersDTO> GetAllDTOForUser(string clientId)
-        {
-            return GetAll().Where(x => x.ClientId == clientId).Select(x => new OrdersDTO()
-            {
-                Id = x.Id,
-                ClientName = x.Client.FirstName,
-                ProductBrand = x.Product.Brand,
-                ProductModel = x.Product.Model,
-                RegistrationDate = x.RegistrationDate,
-                RepairType = x.Repair.RepairType.ToString(),
-                OrderStatus = x.OrderStatus.ToString(),
-                AdditionalNotes = x.AdditionalNotes
-            }).ToList();
-        }
-
-        public List<Order> GetUserOrders(string userId)
-        {
-            return _context.Orders.Where(x => x.ClientId == userId).Include(x => x.Product).ToList();
-        }
-
-        public SearchResult<OrdersDTO> Search(OrdersSearch searchModel, string sortColumn, int start, int length)
-        {
-            SearchResult<OrdersDTO> result = new SearchResult<OrdersDTO>();
-            result.Data = GetAllDTO();
-            if (!String.IsNullOrEmpty(searchModel.ClientName))
-                result.Data = result.Data.Where(s => s.ClientName!.ToUpper().Contains(searchModel.ClientName.ToUpper())).ToList();
-            if (searchModel.Date != null)
-                result.Data = result.Data.Where(s => s.RegistrationDate == searchModel.Date).ToList();
-            if (!String.IsNullOrEmpty(searchModel.ProductModel))
-                result.Data = result.Data.Where(s => s.ProductModel!.ToUpper().Contains(searchModel.ProductModel.ToUpper())).ToList();
-            if (!String.IsNullOrEmpty(searchModel.ProductBrand))
-                result.Data = result.Data.Where(s => s.ProductBrand!.ToUpper().Contains(searchModel.ProductBrand.ToUpper())).ToList();
-
-            switch (sortColumn)
-            {
-                case "registrationDate":
-                    result.Data = result.Data.OrderBy(s => s.RegistrationDate).ToList();
-                    break;
-                case "-registrationDate":
-                    result.Data = result.Data.OrderByDescending(s => s.RegistrationDate).ToList();
-                    break;
+                throw new ArgumentException("Order not found");
             }
 
-            return result;
-        }
-        public SearchResult<OrdersDTO> SearchForUser(OrdersSearch searchModel, string sortColumn, int start, int length, string userId)
-        {
-            SearchResult<OrdersDTO> result = new SearchResult<OrdersDTO>();
-            result.Data = GetAllDTOForUser(userId);
-            if (!String.IsNullOrEmpty(searchModel.ClientName))
-                result.Data = result.Data.Where(s => s.ClientName!.ToUpper().Contains(searchModel.ClientName.ToUpper())).ToList();
-            if (searchModel.Date != null)
-                result.Data = result.Data.Where(s => s.RegistrationDate == searchModel.Date).ToList();
-            if (!String.IsNullOrEmpty(searchModel.ProductModel))
-                result.Data = result.Data.Where(s => s.ProductModel!.ToUpper().Contains(searchModel.ProductModel.ToUpper())).ToList();
-            if (!String.IsNullOrEmpty(searchModel.ProductBrand))
-                result.Data = result.Data.Where(s => s.ProductBrand!.ToUpper().Contains(searchModel.ProductBrand.ToUpper())).ToList();
-
-            switch (sortColumn)
+            // Update order properties
+            if (model.OrderStatus.HasValue)
             {
-                case "registrationDate":
-                    result.Data = result.Data.OrderBy(s => s.RegistrationDate).ToList();
-                    break;
-                case "-registrationDate":
-                    result.Data = result.Data.OrderByDescending(s => s.RegistrationDate).ToList();
-                    break;
+                order.OrderStatus = model.OrderStatus.Value;
             }
 
-            return result;
-        }
-        public void Update(Order order)
-        {
+            // Update repair properties if needed
+            if (order.Repair != null)
+            {
+                order.Repair.RepairType = model.RepairType;
+                order.Repair.AdditionalNotes = model.AdditionalNotes;
+            }
+
             _context.Orders.Update(order);
-            _context.SaveChanges();
+            await _context.SaveChangesAsync();
         }
-        public void Delete(string id)
+
+        public async Task DeleteOrder(string id)
         {
-            var order = GetAll().FirstOrDefault(x => x.Id == id);
-            _context.Orders.Remove(order);
-            _context.SaveChanges();
+            var order = await _context.Orders
+                .Include(o => o.Repair)
+                .FirstOrDefaultAsync(o => o.Id == id);
+
+            if (order != null)
+            {
+                if (order.Repair != null)
+                {
+                    _context.Repairs.Remove(order.Repair);
+                }
+
+                _context.Orders.Remove(order);
+                await _context.SaveChangesAsync();
+            }
         }
     }
 }

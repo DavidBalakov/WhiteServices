@@ -1,5 +1,4 @@
 using Diploma.Entities;
-using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 
 namespace Diploma.Data.Seed
@@ -13,31 +12,30 @@ namespace Diploma.Data.Seed
                 serviceProvider.GetRequiredService<
                     DbContextOptions<ApplicationDbContext>>()))
 
-                
                 if (!context.Products.Any())
                 {
                     context.Products.AddRange(
                     new Product
                     {
                         SerialNumber = "1",
-                        Brand = "HAJ-89",
-                        Model = "Toshiba",
+                        Brand = "Toshiba",
+                        Model = "HAJ-96",
                         UserId = adminId
                     },
 
                     new Product
                     {
                         SerialNumber = "2",
-                        Brand = "HAJ-96",
-                        Model = "Yamaha",
+                        Brand = "Yamaha",
+                        Model = "HAJ-96",
                         UserId = adminId
                     },
 
                     new Product
                     {
                         SerialNumber = "3",
-                        Brand = "HAJ-140",
-                        Model = "Veco",
+                        Brand = "Veco",
+                        Model = "HAJ-140",
                         UserId = adminId
                     }
                 );

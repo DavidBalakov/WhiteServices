@@ -1,19 +1,19 @@
-@model IEnumerable<Diploma.Models.ViewModels.OrderViewModel>
-
+@using Diploma.Entities
+@model IEnumerable<Diploma.Entities.Order>
 @{
-    ViewData["Title"] = "My Orders";
+    ViewData["Title"] = "Моите поръчки";
 }
 
 <div class="page-header">
     <div class="container">
         <div class="row align-items-center">
             <div class="col-md-6">
-                <h1>My Orders</h1>
-                <p>View and manage your repair service orders</p>
+                <h1>Моите поръчки</h1>
+                <p>Управление на вашите поръчки за ремонт</p>
             </div>
             <div class="col-md-6 text-md-end">
-                <a asp-action="Create" class="btn btn-light">
-                    <i class="bi bi-plus-circle me-2"></i>New Order
+                <a href="/Order/Create" class="btn btn-primary">
+                    <i class="bi bi-plus-circle me-2"></i>Нова поръчка
                 </a>
             </div>
         </div>
@@ -21,29 +21,70 @@
 </div>
 
 <div class="container">
-    <div class="card">
-        <div class="card-header bg-primary text-white d-flex justify-content-between align-items-center">
-            <h4 class="mb-0">My Orders</h4>
-            <div class="d-flex">
-                <div class="input-group">
-                    <input type="text" id="orderSearch" class="form-control" placeholder="Search orders...">
-                    <button class="btn btn-light" type="button">
-                        <i class="bi bi-search"></i>
-                    </button>
+    <div class="card shadow-sm">
+        <div class="card-header bg-white py-3">
+            <div class="row align-items-center">
+                <div class="col-md-8">
+                    <h5 class="mb-0 text-primary">Списък с поръчки</h5>
+                </div>
+                <div class="col-md-4">
+                    <div class="input-group">
+                        <span class="input-group-text bg-light border-0">
+                            <i class="bi bi-search text-muted"></i>
+                        </span>
+                        <input type="text" id="orderSearch" class="form-control border-0 bg-light" placeholder="Търсене на поръчки...">
+                    </div>
                 </div>
             </div>
         </div>
+        
+        <!-- Filter Section -->
+        <div class="card-body border-bottom pb-0">
+            <div class="row">
+                <div class="col-md-12">
+                    <div class="filter-container mb-3">
+                        <div class="d-flex flex-wrap gap-2">
+                            <div class="filter-group">
+                                <label class="form-label mb-1">Статус</label>
+                                <select id="statusFilter" class="form-select form-select-sm">
+                                    <option value="">Всички статуси</option>
+                                    <option value="В процес">В процес</option>
+                                    <option value="Завършен">Завършен</option>
+                                    <option value="Чакащ">Чакащ</option>
+                                </select>
+                            </div>
+                            
+                            <div class="filter-group ms-auto">
+                                <label class="form-label mb-1">Сортиране</label>
+                                <select id="sortFilter" class="form-select form-select-sm">
+                                    <option value="date-desc">Дата (Най-нови)</option>
+                                    <option value="date">Дата (Най-стари)</option>
+                                    <option value="status">Статус</option>
+                                </select>
+                            </div>
+                            
+                            <div class="filter-group d-flex align-items-end">
+                                <button id="resetFilters" class="btn btn-sm btn-outline-secondary">
+                                    <i class="bi bi-x-circle me-1"></i>Нулиране
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
         <div class="card-body p-0">
             <div class="table-responsive">
-                <table class="table table-striped table-hover mb-0" id="userOrdersTable">
-                    <thead>
+                <table class="table table-hover align-middle mb-0" id="ordersTable">
+                    <thead class="table-light">
                         <tr>
-                            <th>Order ID</th>
-                            <th>Product</th>
-                            <th>Repair Type</th>
-                            <th>Date</th>
-                            <th>Status</th>
-                            <th>Actions</th>
+                            <th class="ps-4">Поръчка №</th>
+                            <th>Клиент</th>
+                            <th>Продукт</th>
+                            <th>Тип ремонт</th>
+                            <th>Дата</th>
+                            <th>Статус</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -51,31 +92,66 @@
                         {
                             foreach (var order in Model)
                             {
-                                <tr>
-                                    <td>#@order.Id</td>
-                                    <td>@order.ProductBrand @order.ProductModel</td>
-                                    <td>@order.RepairType</td>
-                                    <td><span class="status-badge">@order.OrderStatus</span></td>
+                                var statusClass = order.OrderStatus == OrderStatus.Незавършена ? "bg-warning text-dark" :
+                                                order.OrderStatus == OrderStatus.Завършена ? "bg-success" :
+                                                order.OrderStatus == OrderStatus.Незапочната ? "bg-info text-dark" : "bg-secondary";
+                                var statusText = "";
+                                switch (order.OrderStatus)
+                                {
+                                    case OrderStatus.Незапочната:
+                                        statusText = "Чакащ";
+                                        break;
+                                    case OrderStatus.Незавършена:
+                                        statusText = "В процес";
+                                        break;
+                                    case OrderStatus.Завършена:
+                                        statusText = "Завършен";
+                                        break;
+                                    case OrderStatus.Отказана:
+                                        statusText = "Отказан";
+                                        break;
+                                }
+                                
+                                <tr data-status="@statusText" data-brand="@order.Product?.Brand">
+                                    <td class="ps-4"><span class="order-id">#@order.Id.Substring(0, 5)</span></td>
+                                    <td>@order.User.FirstName @order.User.LastName</td>
+                                    <td>@order.Product?.Brand @order.Product?.Model</td>
                                     <td>
-                                        <div class="btn-group btn-group-sm">
-                                            <a asp-action="Details" asp-route-id="@order.Id" class="btn btn-outline-primary"
-                                                data-bs-toggle="tooltip" title="View Details">
-                                                <i class="bi bi-eye"></i>
-                                            </a>
-                                        </div>
+                                        @switch (order.Repair.RepairType)
+                                        {
+                                            case RepairType.Dishwasher:
+                                                <span>Диагностика</span>
+                                                break;
+                                            case RepairType.Refrigerator:
+                                                <span>Ремонт</span>
+                                                break;
+                                            case RepairType.Stove:
+                                                <span>Поддръжка</span>
+                                                break;
+                                            case RepairType.WashingMachine:
+                                                <span>Подмяна на части</span>
+                                                break;
+                                            default:
+                                                <span>Друго</span>
+                                                break;
+                                        }
                                     </td>
+                                    <td>@order.RegistrationDate.ToString("dd.MM.yyyy")</td>
+                                    <td><span class="badge @statusClass">@statusText</span></td>
                                 </tr>
                             }
                         }
                         else
                         {
                             <tr>
-                                <td colspan="6" class="text-center py-4">
-                                    <div class="empty-state">
-                                        <i class="bi bi-clipboard-x empty-state-icon"></i>
-                                        <h5>No Orders Found</h5>
-                                        <p class="text-muted">You don't have any orders yet.</p>
-                                        <a asp-action="Create" class="btn btn-primary">Create New Order</a>
+                                <td colspan="7" class="text-center py-5">
+                                    <div class="py-5">
+                                        <i class="bi bi-clipboard-x text-muted" style="font-size: 3rem;"></i>
+                                        <h5 class="mt-3">Няма намерени поръчки</h5>
+                                        <p class="text-muted mb-3">Все още няма поръчки в системата.</p>
+                                        <a href="/Order/Create" class="btn btn-primary">
+                                            <i class="bi bi-plus-circle me-2"></i>Създай нова поръчка
+                                        </a>
                                     </div>
                                 </td>
                             </tr>
@@ -84,23 +160,194 @@
                 </table>
             </div>
         </div>
+        <div class="card-footer bg-white py-3">
+            <div class="row align-items-center">
+                <div class="col-md-6">
+                    <p class="mb-0 text-muted">Показване на <span id="visibleCount">0</span> от <span id="totalCount">0</span> поръчки</p>
+                </div>
+            </div>
+        </div>
     </div>
 </div>
 
 @section Scripts {
     <script>
-        $(document).ready(function () {
-            $("#orderSearch").on("keyup", function () {
-                var value = $(this).val().toLowerCase();
-                $("#userOrdersTable tbody tr").filter(function () {
-                    $(this).toggle($(this).text().toLowerCase().indexOf(value) > -1)
+        $(document).ready(function() {
+            loadOrders();
+            
+            // Search functionality
+            $("#orderSearch").on("keyup", function() {
+                applyFilters();
+            });
+            
+            // Filter functionality
+            $("#statusFilter, #sortFilter").on("change", function() {
+                applyFilters();
+            });
+            
+            // Reset filters
+            $("#resetFilters").on("click", function() {
+                $("#orderSearch").val("");
+                $("#statusFilter").val("");
+                $("#sortFilter").val("date-desc");
+                applyFilters();
+            });
+            
+            function loadOrders() {
+                $.ajax({
+                    url: '/Order/GetUserOrders',
+                    type: 'GET',
+                    dataType: 'json',
+                    success: function(data) {
+                        renderOrders(data);
+                        $("#totalCount").text(data.length);
+                        $("#visibleCount").text(data.length);
+                        applyFilters();
+                    },
+                    error: function(error) {
+                        console.error('Error loading orders:', error);
+                    }
                 });
-            });
-
-            var tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'));
-            var tooltipList = tooltipTriggerList.map(function (tooltipTriggerEl) {
-                return new bootstrap.Tooltip(tooltipTriggerEl);
-            });
+            }
+            
+            function renderOrders(orders) {
+                var tbody = $("#ordersTableBody");
+                tbody.empty();
+                
+                if (orders.length === 0) {
+                    tbody.append(`
+                        <tr>
+                            <td colspan="6" class="text-center py-5">
+                                <div class="py-5">
+                                    <i class="bi bi-clipboard-x text-muted" style="font-size: 3rem;"></i>
+                                    <h5 class="mt-3">Няма намерени поръчки</h5>
+                                    <p class="text-muted mb-3">Все още нямате поръчки в системата.</p>
+                                    <a href="/Order/Create" class="btn btn-primary">
+                                        <i class="bi bi-plus-circle me-2"></i>Създай нова поръчка
+                                    </a>
+                                </div>
+                            </td>
+                        </tr>
+                    `);
+                    return;
+                }
+                
+                orders.forEach(function(order) {
+                    var statusClass = getStatusClass(order.orderStatus);
+                    var statusText = order.orderStatus || 'Незавършена';
+                    
+                    tbody.append(`
+                        <tr data-status="${statusText}">
+                            <td class="ps-4"><span class="order-id">#${order.id.substring(0, 5)}</span></td>
+                            <td>${order.product.brand} ${order.product.model}</td>
+                            <td>${getRepairTypeText(order.repair.repairType)}</td>
+                            <td>${formatDate(order.registrationDate)}</td>
+                            <td><span class="badge ${statusClass}">${statusText}</span></td>
+                            <td class="text-end pe-4">
+                                <a href="/Order/Details/${order.id}" class="btn btn-sm btn-outline-primary me-1">
+                                    <i class="bi bi-eye"></i>
+                                </a>
+                            </td>
+                        </tr>
+                    `);
+                });
+            }
+            
+            function applyFilters() {
+                var searchValue = $("#orderSearch").val().toLowerCase();
+                var statusFilter = $("#statusFilter").val();
+                var sortFilter = $("#sortFilter").val();
+                var visibleCount = 0;
+                
+                // First hide/show based on filters
+                $("#ordersTable tbody tr").each(function() {
+                    var row = $(this);
+                    var rowText = row.text().toLowerCase();
+                    var rowStatus = row.data("status");
+                    
+                    var matchesSearch = rowText.indexOf(searchValue) > -1;
+                    var matchesStatus = statusFilter === "" || rowStatus === statusFilter;
+                    
+                    var isVisible = matchesSearch && matchesStatus;
+                    row.toggle(isVisible);
+                    
+                    if (isVisible) visibleCount++;
+                });
+                
+                // Then sort the visible rows
+                var rows = $("#ordersTable tbody tr:visible").get();
+                rows.sort(function(a, b) {
+                    var keyA, keyB;
+                    
+                    switch(sortFilter) {
+                        case "date":
+                            keyA = $(a).find("td:eq(3)").text();
+                            keyB = $(b).find("td:eq(3)").text();
+                            return new Date(keyA) - new Date(keyB);
+                        case "date-desc":
+                            keyA = $(a).find("td:eq(3)").text();
+                            keyB = $(b).find("td:eq(3)").text();
+                            return new Date(keyB) - new Date(keyA);
+                        case "status":
+                            keyA = $(a).find("td:eq(4)").text();
+                            keyB = $(b).find("td:eq(4)").text();
+                            return keyA.localeCompare(keyB);
+                        default:
+                            return 0;
+                    }
+                });
+                
+                // Reappend in the new order
+                $.each(rows, function(index, row) {
+                    $("#ordersTable tbody").append(row);
+                });
+                
+                $("#visibleCount").text(visibleCount);
+            }
+            
+            function getStatusClass(status) {
+                switch(status) {
+                    case 'В процес':
+                        return 'bg-warning text-dark';
+                    case 'Завършен':
+                        return 'bg-success';
+                    case 'Чакащ':
+                        return 'bg-info text-dark';
+                    default:
+                        return 'bg-secondary';
+                }
+            }
+            
+            function getRepairTypeText(type) {
+                switch(type) {
+                    case 0:
+                        return 'Диагностика';
+                    case 1:
+                        return 'Ремонт';
+                    case 2:
+                        return 'Поддръжка';
+                    case 3:
+                        return 'Подмяна на части';
+                    default:
+                        return 'Друго';
+                }
+            }
+            
+            function formatDate(dateString) {
+                if (!dateString) return '';
+                
+                // Handle different date formats
+                var date;
+                if (dateString.includes('T')) {
+                    date = new Date(dateString);
+                } else {
+                    // Handle format like "2025-03-10"
+                    var parts = dateString.split('-');
+                    date = new Date(parts[0], parts[1] - 1, parts[2]);
+                }
+                
+                return date.toLocaleDateString('bg-BG');
+            }
         });
     </script>
 }

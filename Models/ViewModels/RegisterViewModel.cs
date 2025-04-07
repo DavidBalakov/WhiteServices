@@ -18,6 +18,5 @@ namespace Diploma.Models.ViewModels
         [Required(ErrorMessage = "Телефонният номер е задължителен")]
         public string PhoneNumber { get; set; }
         public string? Role { get; set; }
-
     }
 }

@@ -1,4 +1,3 @@
-using Diploma.DTO;
 using Diploma.Entities;
 using Diploma.Models.ViewModels;
 
@@ -6,14 +5,22 @@ namespace Diploma.Services
 {
     public interface IOrderService
     {
-        List<Order> GetAll();
-        List<Order> GetUserOrders(string userId);
-        void Update(Order order);
-        void Delete(string id);
-
-        Task<bool> AddOrderAsync(OrderViewModel orderViewModel, string userId);
-        SearchResult<OrdersDTO> Search(OrdersSearch searchModel, string sortColumn, int start, int length);
-        SearchResult<OrdersDTO> SearchForUser(OrdersSearch searchModel, string sortColumn, int start, int length, string userId);
-        Task<string> AssignOrderAsync(string orderId, string employeeId);
+        // Get all orders (for admin/technician)
+        Task<IEnumerable<Order>> GetAllOrders();
+        
+        // Get orders for a specific user
+        Task<IEnumerable<Order>> GetOrdersByUserId(string userId);
+        
+        // Get a specific order by ID
+        Task<Order> GetOrderById(string id);
+        
+        // Create a new order
+        Task<string> CreateOrder(OrderViewModel model, string userId);
+        
+        // Update an existing order
+        Task UpdateOrder(OrderViewModel model);
+        
+        // Delete an order
+        Task DeleteOrder(string id);
     }
 }

@@ -14,7 +14,6 @@ namespace Diploma.Data.Seed
                 var _userManager = scope.ServiceProvider.GetService<UserManager<RegisteredUser>>();
                 var _userStore = scope.ServiceProvider.GetService<IUserStore<RegisteredUser>>();
 
-                // if (_context.Users.Any())
                 if (_userManager.FindByNameAsync("Admin").GetAwaiter().GetResult() == null)
                 {
                     RegisteredUser admin = new RegisteredUser()

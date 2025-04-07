@@ -1,6 +1,5 @@
 ﻿using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
-using Diploma.Entities;
 
 namespace Diploma.Models.ViewModels.Products
 {
@@ -16,22 +15,6 @@ namespace Diploma.Models.ViewModels.Products
         public string Brand { get; set; }
         [Required(ErrorMessage = "Полето \"Модел\" е задължително!")]
         [DisplayName("Модел")]
-        public string Model { get; set; }
-        public void PopulateProduct(Product product)
-        {
-            product.SerialNumber = SerialNumber;
-            product.Brand = Brand;
-            product.Model = Model;
-        }
-
-        public void PopulateFromProduct(Product? product)
-        {
-            if (product == null)
-                return;
-
-            product.SerialNumber = SerialNumber;
-            product.Brand = Brand;
-            product.Model = Model;
-        }
+        public string Modelz { get; set; }
     }
 }

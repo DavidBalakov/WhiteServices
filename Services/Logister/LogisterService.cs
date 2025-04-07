@@ -116,7 +116,7 @@ namespace Diploma.Services.Register
                     FirstName = user.FirstName,
                     LastName = user.LastName,
                     PhoneNumber = user.PhoneNumber,
-                    Role = role
+                    Roles = roles.ToList()
                 });
             }
 

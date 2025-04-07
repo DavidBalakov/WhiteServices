@@ -1,103 +1,87 @@
 ﻿@model Diploma.Models.ViewModels.RegisterViewModel
 
 @{
-    ViewData["Title"] = "Register";
+    ViewData["Title"] = "Регистрация";
 }
 
-<div class="page-header">
+<div class="register-page">
     <div class="container">
-        <div class="row align-items-center">
-            <div class="col-md-6">
-                <h1>Register New User</h1>
-                <p>Create a new account in the system</p>
-            </div>
-        </div>
-    </div>
-</div>
+        <div class="row justify-content-center">
+            <div class="col-md-8 col-lg-7">
+                <div class="card register-card shadow-lg border-0 animate__animated animate__fadeIn">
+                    <div class="card-body p-4 p-md-5">
+                        <div class="text-center mb-4">
+                            <div class="register-icon-wrapper">
+                                <i class="bi bi-person-plus register-icon"></i>
+                            </div>
+                            <h2 class="mt-3 text-primary">Създаване на акаунт</h2>
+                            <p class="text-muted">Попълнете формата, за да се регистрирате</p>
+                        </div>
 
-<div class="container">
-    <div class="row justify-content-center">
-        <div class="col-md-8">
-            <div class="card">
-                <div class="card-header bg-primary text-white">
-                    <h4 class="mb-0">Registration Form</h4>
-                </div>
-                <div class="card-body">
-                    <form asp-action="Register" method="post">
-                        <div asp-validation-summary="All" class="text-danger mb-3"></div>
-
-                        <div class="row mb-3">
-                            <div class="col-md-6">
-                                <div class="mb-3">
-                                    <label asp-for="UserName" class="form-label">Username</label>
-                                    <input asp-for="UserName" class="form-control" />
+                        <form asp-action="Register" method="post" class="register-form">
+                            <div asp-validation-summary="ModelOnly" class="text-danger mb-3"></div>
+                            
+                            <div class="row">
+                                <div class="col-md-6 mb-3">
+                                    <div class="form-floating">
+                                        <input asp-for="FirstName" class="form-control" placeholder="Въведете име" />
+                                        <label asp-for="FirstName">Име</label>
+                                        <span asp-validation-for="FirstName" class="text-danger"></span>
+                                    </div>
+                                </div>
+                                <div class="col-md-6 mb-3">
+                                    <div class="form-floating">
+                                        <input asp-for="LastName" class="form-control" placeholder="Въведете фамилия" />
+                                        <label asp-for="LastName">Фамилия</label>
+                                        <span asp-validation-for="LastName" class="text-danger"></span>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <div class="mb-3">
+                                <div class="form-floating">
+                                    <input asp-for="UserName" class="form-control" placeholder="Въведете потребителско име" />
+                                    <label asp-for="UserName">Потребителско име</label>
                                     <span asp-validation-for="UserName" class="text-danger"></span>
                                 </div>
                             </div>
-                            <div class="col-md-6">
-                                <div class="mb-3">
-                                    <label asp-for="Email" class="form-label">Email</label>
-                                    <input asp-for="Email" class="form-control" />
+                            
+                            <div class="mb-3">
+                                <div class="form-floating">
+                                    <input asp-for="Email" class="form-control" placeholder="example@email.com" />
+                                    <label asp-for="Email">Имейл</label>
                                     <span asp-validation-for="Email" class="text-danger"></span>
                                 </div>
                             </div>
-                        </div>
-
-                        <div class="row mb-3">
-                            <div class="col-md-6">
-                                <div class="mb-3">
-                                    <label asp-for="FirstName" class="form-label">First Name</label>
-                                    <input asp-for="FirstName" class="form-control" />
-                                    <span asp-validation-for="FirstName" class="text-danger"></span>
-                                </div>
-                            </div>
-                            <div class="col-md-6">
-                                <div class="mb-3">
-                                    <label asp-for="LastName" class="form-label">Last Name</label>
-                                    <input asp-for="LastName" class="form-control" />
-                                    <span asp-validation-for="LastName" class="text-danger"></span>
-                                </div>
-                            </div>
-                        </div>
-
-                        <div class="row mb-3">
-                            <div class="col-md-6">
-                                <div class="mb-3">
-                                    <label asp-for="PhoneNumber" class="form-label">Phone Number</label>
-                                    <input asp-for="PhoneNumber" class="form-control" />
+                            
+                            <div class="mb-3">
+                                <div class="form-floating">
+                                    <input asp-for="PhoneNumber" class="form-control" placeholder="0888 123 456" />
+                                    <label asp-for="PhoneNumber">Телефонен номер</label>
                                     <span asp-validation-for="PhoneNumber" class="text-danger"></span>
                                 </div>
                             </div>
-                            <div class="col-md-6">
-                                <div class="mb-3">
-                                    <label asp-for="Role" class="form-label">Role</label>
-                                    <select asp-for="Role" class="form-select">
-                                        <option value="User">User</option>
-                                        <option value="Technician">Technician</option>
-                                        <option value="Admin">Admin</option>
-                                    </select>
-                                    <span asp-validation-for="Role" class="text-danger"></span>
-                                </div>
-                            </div>
-                        </div>
-
-                        <div class="row mb-3">
-                            <div class="col-md-6">
-                                <div class="mb-3">
-                                    <label asp-for="Password" class="form-label">Password</label>
-                                    <input asp-for="Password" class="form-control" type="password" />
+                            
+                            <div class="mb-4">
+                                <div class="form-floating">
+                                    <input asp-for="Password" type="password" class="form-control" placeholder="Въведете парола" />
+                                    <label asp-for="Password">Парола</label>
                                     <span asp-validation-for="Password" class="text-danger"></span>
                                 </div>
+                                <div class="form-text">Паролата трябва да съдържа поне 6 символа, включително главни и малки букви, цифри и специални символи.</div>
                             </div>
-
-                            <div class="d-flex justify-content-end">
-                                <a asp-action="Login" class="btn btn-secondary me-2">Cancel</a>
-                                <button type="submit" class="btn btn-primary">
-                                    <i class="bi bi-person-plus me-2"></i>Register
+                            
+                            <div class="d-grid">
+                                <button type="submit" class="btn btn-primary btn-lg">
+                                    <i class="bi bi-person-plus me-2"></i>Регистрация
                                 </button>
                             </div>
+                        </form>
+                        
+                        <div class="mt-4 text-center">
+                            <p>Вече имате акаунт? <a href="/RegisteredUser/LogIn" class="text-decoration-none">Влезте тук</a></p>
                         </div>
-                    </form>
+                    </div>
                 </div>
             </div>
         </div>
@@ -105,7 +89,68 @@
 </div>
 
 @section Scripts {
-    @{
-        await Html.RenderPartialAsync("_ValidationScriptsPartial");
-    }
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+    <script>
+        $(document).ready(function() {
+            $('.form-control').on('focus', function() {
+                $(this).closest('.form-floating').addClass('focused');
+            }).on('blur', function() {
+                if (!$(this).val()) {
+                    $(this).closest('.form-floating').removeClass('focused');
+                }
+            });
+            
+            $('.form-control').each(function() {
+                if ($(this).val()) {
+                    $(this).closest('.form-floating').addClass('focused');
+                }
+            });
+            
+            $('#Password').on('input', function() {
+                var password = $(this).val();
+                var strength = 0;
+                
+                if (password.length >= 6) strength += 1;
+                if (password.match(/[A-Z]/)) strength += 1;
+                if (password.match(/[a-z]/)) strength += 1;
+                if (password.match(/[0-9]/)) strength += 1;
+                if (password.match(/[^A-Za-z0-9]/)) strength += 1;
+                
+                var strengthClass = '';
+                var strengthText = '';
+                
+                switch(strength) {
+                    case 0:
+                    case 1:
+                        strengthClass = 'bg-danger';
+                        strengthText = 'Много слаба';
+                        break;
+                    case 2:
+                        strengthClass = 'bg-warning';
+                        strengthText = 'Слаба';
+                        break;
+                    case 3:
+                        strengthClass = 'bg-info';
+                        strengthText = 'Средна';
+                        break;
+                    case 4:
+                        strengthClass = 'bg-primary';
+                        strengthText = 'Добра';
+                        break;
+                    case 5:
+                        strengthClass = 'bg-success';
+                        strengthText = 'Силна';
+                        break;
+                }
+                
+                if ($('#passwordStrength').length === 0) {
+                    $(this).after('<div id="passwordStrength" class="mt-2"><div class="progress"><div class="progress-bar" role="progressbar" style="width: 0%"></div></div><small class="strength-text mt-1 d-block"></small></div>');
+                }
+                
+                var percentage = (strength / 5) * 100;
+                $('#passwordStrength .progress-bar').attr('class', 'progress-bar ' + strengthClass).css('width', percentage + '%');
+                $('#passwordStrength .strength-text').text('Сила на паролата: ' + strengthText);
+            });
+        });
+    </script>
 }

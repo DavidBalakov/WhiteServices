@@ -1,18 +1,12 @@
-using System.ComponentModel.DataAnnotations.Schema;
+using System.ComponentModel.DataAnnotations;
 
 namespace Diploma.Entities
 {
     public class Repair
     {
-        public Repair()
-        {
-            Id = Guid.NewGuid().ToString();
-        }
-        public string Id { get; set; }
+        [Key]
+        public int Id { get; set; }
         public RepairType RepairType { get; set; }
-        [ForeignKey("Product")]
-        public string ProductSerialNumber { get; set; }
-        public Product Product { get; set; }
-        public List<Order> Orders { get; set; }
+        public string AdditionalNotes { get; set; }
     }
 }

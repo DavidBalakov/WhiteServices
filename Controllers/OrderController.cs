@@ -1,206 +1,365 @@
-using System.ComponentModel.DataAnnotations;
-using System.Text.Json;
-using System.Web;
-using Diploma.DTO;
-using Diploma.Entities;
-using Diploma.Extensions;
-using Diploma.Models.ViewModels;
-using Diploma.Services;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Authorization;
+using Diploma.Services;
+using Diploma.Entities;
+using Diploma.Models.ViewModels;
+using Diploma.DTO;
 using Microsoft.AspNetCore.Mvc.Rendering;
-using Microsoft.IdentityModel.Tokens;
+using Microsoft.AspNetCore.Identity;
+using Diploma.Extensions;
 
 namespace Diploma.Controllers
 {
+    [Authorize]
     public class OrderController : Controller
     {
         private readonly IOrderService _orderService;
-        private readonly IProductService _productsService;
-        private IHttpContextAccessor _httpContextAccessor;
-        private readonly JsonSerializerOptions _options = new()
-        {
-            PropertyNamingPolicy = JsonNamingPolicy.CamelCase,
-            WriteIndented = true,
-            Encoder = System.Text.Encodings.Web.JavaScriptEncoder.UnsafeRelaxedJsonEscaping
-        };
+        private readonly IProductService _productService;
+        private readonly UserManager<RegisteredUser> _userManager;
 
-        public OrderController(IOrderService orderService, IHttpContextAccessor httpContextAccessor
-        , IProductService productsService)
+        public OrderController(
+            IOrderService orderService, 
+            IProductService productService,
+            UserManager<RegisteredUser> userManager)
         {
             _orderService = orderService;
-            _httpContextAccessor = httpContextAccessor;
-            _productsService = productsService;
+            _productService = productService;
+            _userManager = userManager;
         }
 
-        public IActionResult Orders()
+        public async Task<IActionResult> Create()
         {
-            return View();
-        }
-        public IActionResult UserOrders()
-        {
-            return View();
+            try
+            {
+                var userId = _userManager.GetUserId(User);
+                
+                // Get products for the current user
+                var products = await _productService.GetProductsForUser(User.Id());
+                
+                // Create SelectList for the dropdown
+                ViewBag.Products = new SelectList(
+                    products.Select(p => new { Id = p.Id.ToString(), Text = $"{p.Brand} {p.Model} ({p.SerialNumber})" }),
+                    "Id", 
+                    "Text"
+                );
+                
+                return View(new OrderViewModel());
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Error loading create order form: {ex.Message}");
+                
+                // Return with error message
+                TempData["ErrorMessage"] = "Възникна грешка при зареждане на формата. Моля, опитайте отново.";
+                return RedirectToAction("Index", "Home");
+            }
         }
 
-        public IActionResult Create()
-        {
-            OrderViewModel viewModel = new OrderViewModel();
-            List<Product> userProducts = _productsService.GetProductsForUser(User.Id());
-            ViewData["Products"] = new SelectList(userProducts, "SerialNumber", "Brand");
-            return View(viewModel);
-        }
         [HttpPost]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create(OrderViewModel viewModel)
+        public async Task<IActionResult> Create(OrderViewModel model)
         {
-            Product product = new Product();
-            if (await _orderService.AddOrderAsync(viewModel, User.Id()))
-            {
-                TempData["success"] = $"Продукт {product.Model} бе добавен успешно!";
-                return RedirectToAction("UserOrders");
-            }
-            else if (ModelState.IsValid)
-            {
-                TempData["error"] = "Невъзможно е да се създаде продуктът!";
-            }
-
-            return View(viewModel);
-        }
-        public string GetUserOrders()
-        {
-            List<Order> users = _orderService.GetUserOrders(User.Id());
-            string json = JsonSerializer.Serialize(users, _options);
-
-            return json;
-        }
-
-        public async Task<IActionResult> AssignOrder(string orderId, string employeeId)
-        {
-            string failiureMessage = await _orderService.AssignOrderAsync(orderId, employeeId);
-            if (!failiureMessage.IsNullOrEmpty())
-            {
-                TempData["error"] = failiureMessage;
-            }
-            return RedirectToAction("Orders", "Order");
-        }
-        public IActionResult Get(int draw, int start, int length)
-        {
-            string urlQuery = _httpContextAccessor.HttpContext.Request.QueryString.Value;
-            var paramsCollection = HttpUtility.ParseQueryString(urlQuery);
-
-            //Get search params
-            string? ClientName = paramsCollection["columns[0][search][value]"];
-            DateOnly? Date = null;
-            string? Brand = paramsCollection["columns[1][search][value]"];
-            string? Model = paramsCollection["columns[2][search][value]"];
-
-            // string? defaultOrder = paramsCollection["columns[1][search][value]"];
-
-            //Get sort
-            string? sortColumnIndex = paramsCollection["order[0][column]"];
-            string? sortColumnName = paramsCollection["columns[" + sortColumnIndex + "][data]"];
-            string? sortDirection = paramsCollection["order[0][dir]"];
-            string sortColumn = "";
-
-            OrdersSearch searchModel = new OrdersSearch();
-            searchModel.ClientName = ClientName;
-            searchModel.Date = Date;
-            searchModel.ProductModel = Model;
-            searchModel.ProductBrand = Brand;
-
-            if (sortDirection == "asc")
-                sortColumn = sortColumnName;
-            else
-                sortColumn = $"-{sortColumnName}";
-
-            SearchResult<OrdersDTO> result = _orderService.Search(searchModel, sortColumn, start, length);
-
-            return Ok(new
-            {
-                draw = draw,
-                recordsTotal = result.RecordsTotal,
-                recordsFiltered = result.RecordsFiltered,
-                data = result.Data
-            });
-        }
-        public IActionResult GetUser(int draw, int start, int length)
-        {
-            string urlQuery = _httpContextAccessor.HttpContext.Request.QueryString.Value;
-            var paramsCollection = HttpUtility.ParseQueryString(urlQuery);
-
-            //Get search params
-            string? ClientName = paramsCollection["columns[0][search][value]"];
-            DateOnly? Date = null;
-            string? Brand = paramsCollection["columns[1][search][value]"];
-            string? Model = paramsCollection["columns[2][search][value]"];
-
-            // string? defaultOrder = paramsCollection["columns[1][search][value]"];
-
-            //Get sort
-            string? sortColumnIndex = paramsCollection["order[0][column]"];
-            string? sortColumnName = paramsCollection["columns[" + sortColumnIndex + "][data]"];
-            string? sortDirection = paramsCollection["order[0][dir]"];
-            string sortColumn = "";
-
-            OrdersSearch searchModel = new OrdersSearch();
-            searchModel.ClientName = ClientName;
-            searchModel.Date = Date;
-            searchModel.ProductModel = Model;
-            searchModel.ProductBrand = Brand;
-
-            if (sortDirection == "asc")
-                sortColumn = sortColumnName;
-            else
-                sortColumn = $"-{sortColumnName}";
-
-            SearchResult<OrdersDTO> result = _orderService.SearchForUser(searchModel, sortColumn, start, length, User.Id());
-
-            return Ok(new
-            {
-                draw = draw,
-                recordsTotal = result.RecordsTotal,
-                recordsFiltered = result.RecordsFiltered,
-                data = result.Data
-            });
-        }
-        public IActionResult Update(string id)
-        {
-            Order order = _orderService.GetAll().FirstOrDefault(x => x.Id == id);
-            OrderViewModel viewModel = new OrderViewModel()
-            {
-                Id = order.Id,
-                RepairType = order.Repair.RepairType,
-                ProductId = order.ProductId,
-                AdditionalNotes = order.AdditionalNotes,
-                OrderStatus = order.OrderStatus,
-            };
-            return View(viewModel);
-        }
-        [HttpPost]
-        public IActionResult Update(OrderViewModel orderViewModel)
-        {
-            ModelState.Remove("ProductId");
             if (ModelState.IsValid)
             {
-
-                Order order1 = _orderService.GetAll().FirstOrDefault(x => x.Id == orderViewModel.Id);
-
-                order1.AdditionalNotes = orderViewModel.AdditionalNotes;
-                order1.Repair.RepairType = orderViewModel.RepairType;
-                if (orderViewModel.OrderStatus is OrderStatus theOrderStatus)
+                try
                 {
-                    order1.OrderStatus = theOrderStatus;
+                    // Create the order
+                    var userId = _userManager.GetUserId(User);
+                    await _orderService.CreateOrder(model, userId);
+                    
+                    TempData["SuccessMessage"] = "Поръчката е създадена успешно!";
+                    return RedirectToAction(nameof(UserOrders));
                 }
-
-                _orderService.Update(order1);
-                return RedirectToAction("Orders", "Order");
-
+                catch (Exception ex)
+                {
+                    Console.WriteLine($"Error creating order: {ex.Message}");
+                    ModelState.AddModelError("", "Възникна грешка при създаване на поръчката. Моля, опитайте отново.");
+                }
             }
-            return View(orderViewModel);
+            
+            var products = await _productService.GetProductsForUser(_userManager.GetUserId(User));
+            ViewBag.Products = new SelectList(
+                products.Select(p => new { Id = p.Id.ToString(), Text = $"{p.Brand} {p.Model} ({p.SerialNumber})" }),
+                "Id", 
+                "Text"
+            );
+            
+            return View(model);
         }
-        public IActionResult Delete(string id)
+
+        public async Task<IActionResult> UserOrders()
         {
-            _orderService.Delete(id);
-            return RedirectToAction("Orders", "Order");
+            var orders = await _orderService.GetOrdersByUserId(User.Id());
+            return View(orders);
+        }
+
+        [HttpGet]
+        public async Task<IActionResult> GetUserOrders([FromQuery] OrdersSearch search, int start = 0, int length = 10)
+        {
+            try
+            {
+                var userId = _userManager.GetUserId(User);
+                var orders = await _orderService.GetOrdersByUserId(userId);
+                
+                // Convert to DTO
+                var orderDTOs = orders.Select(o => new OrdersDTO
+                {
+                    Id = o.Id,
+                    ClientName = $"{o.User.FirstName} {o.User.LastName}",
+                    RegistrationDate = DateOnly.FromDateTime(o.RegistrationDate),
+                    RepairType = o.Repair.RepairType.ToString(),
+                    OrderStatus = o.OrderStatus.ToString(),
+                    ProductBrand = o.Product?.Brand ?? "",
+                    ProductModel = o.Product?.Model ?? "",
+                    AdditionalNotes = o.Repair?.AdditionalNotes ?? ""
+                }).ToList();
+                
+                // Apply filters if provided
+                var filteredOrders = orderDTOs.AsQueryable();
+                
+                if (!string.IsNullOrEmpty(search.ClientName))
+                {
+                    filteredOrders = filteredOrders.Where(o => o.ClientName.Contains(search.ClientName));
+                }
+                
+                if (search.Date.HasValue)
+                {
+                    filteredOrders = filteredOrders.Where(o => o.RegistrationDate == search.Date.Value);
+                }
+                
+                if (!string.IsNullOrEmpty(search.ProductModel))
+                {
+                    filteredOrders = filteredOrders.Where(o => o.ProductModel.Contains(search.ProductModel));
+                }
+                
+                if (!string.IsNullOrEmpty(search.ProductBrand))
+                {
+                    filteredOrders = filteredOrders.Where(o => o.ProductBrand.Contains(search.ProductBrand));
+                }
+                
+                var totalCount = filteredOrders.Count();
+                
+                // Apply pagination
+                var pagedOrders = filteredOrders
+                    .Skip(start)
+                    .Take(length)
+                    .ToList();
+                
+                var result = new SearchResult<OrdersDTO>
+                {
+                    RecordsTotal = orderDTOs.Count,
+                    RecordsFiltered = totalCount,
+                    Start = start,
+                    TotalPages = (int)Math.Ceiling((double)totalCount / length),
+                    Data = pagedOrders
+                };
+                
+                return Json(result);
+            }
+            catch (Exception ex)
+            {
+                // Log the exception
+                Console.WriteLine($"Error getting user orders: {ex.Message}");
+                return Json(new SearchResult<OrdersDTO>
+                {
+                    RecordsTotal = 0,
+                    RecordsFiltered = 0,
+                    Start = start,
+                    TotalPages = 0,
+                    Data = new List<OrdersDTO>()
+                });
+            }
+        }
+
+        [Authorize(Roles = "Admin, Employee")]
+        public async Task<IActionResult> Orders()
+        {
+            var orders = await _orderService.GetAllOrders();
+            return View(orders);
+        }
+
+        [Authorize(Roles = "Admin, Employee")]
+        [HttpGet]
+        public async Task<IActionResult> Get([FromQuery] OrdersSearch search, int start = 0, int length = 10)
+        {
+            try
+            {
+                var orders = await _orderService.GetAllOrders();
+                
+                // Convert to DTO
+                var orderDTOs = orders.Select(o => new OrdersDTO
+                {
+                    Id = o.Id,
+                    ClientName = $"{o.User.FirstName} {o.User.LastName}",
+                    RegistrationDate = DateOnly.FromDateTime(o.RegistrationDate),
+                    RepairType = o.Repair.RepairType.ToString(),
+                    OrderStatus = o.OrderStatus.ToString(),
+                    ProductBrand = o.Product?.Brand ?? "",
+                    ProductModel = o.Product?.Model ?? "",
+                    AdditionalNotes = o.Repair?.AdditionalNotes ?? ""
+                }).ToList();
+                
+                // Apply filters if provided
+                var filteredOrders = orderDTOs.AsQueryable();
+                
+                if (!string.IsNullOrEmpty(search.ClientName))
+                {
+                    filteredOrders = filteredOrders.Where(o => o.ClientName.Contains(search.ClientName));
+                }
+                
+                if (search.Date.HasValue)
+                {
+                    filteredOrders = filteredOrders.Where(o => o.RegistrationDate == search.Date.Value);
+                }
+                
+                if (!string.IsNullOrEmpty(search.ProductModel))
+                {
+                    filteredOrders = filteredOrders.Where(o => o.ProductModel.Contains(search.ProductModel));
+                }
+                
+                if (!string.IsNullOrEmpty(search.ProductBrand))
+                {
+                    filteredOrders = filteredOrders.Where(o => o.ProductBrand.Contains(search.ProductBrand));
+                }
+                
+                var totalCount = filteredOrders.Count();
+                
+                // Apply pagination
+                var pagedOrders = filteredOrders
+                    .Skip(start)
+                    .Take(length)
+                    .ToList();
+                
+                var result = new SearchResult<OrdersDTO>
+                {
+                    RecordsTotal = orderDTOs.Count,
+                    RecordsFiltered = totalCount,
+                    Start = start,
+                    TotalPages = (int)Math.Ceiling((double)totalCount / length),
+                    Data = pagedOrders
+                };
+                
+                return Json(result);
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Error getting all orders: {ex.Message}");
+                
+                return Json(new SearchResult<OrdersDTO>
+                {
+                    RecordsTotal = 0,
+                    RecordsFiltered = 0,
+                    Start = start,
+                    TotalPages = 0,
+                    Data = new List<OrdersDTO>()
+                });
+            }
+        }
+
+        public async Task<IActionResult> Details(string id)
+        {
+            try
+            {
+                var order = await _orderService.GetOrderById(id);
+                if (order == null)
+                {
+                    return NotFound();
+                }
+                
+                // Check if the current user is authorized to view this order
+                var userId = _userManager.GetUserId(User);
+                if (order.UserId != userId && !User.IsInRole("Admin") && !User.IsInRole("Employee"))
+                {
+                    return Forbid();
+                }
+                
+                return View(order);
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Error getting order details: {ex.Message}");
+                
+                TempData["ErrorMessage"] = "Възникна грешка при зареждане на детайлите за поръчката.";
+                return RedirectToAction(nameof(UserOrders));
+            }
+        }
+
+        [Authorize(Roles = "Admin,Employee")]
+        public async Task<IActionResult> Update(string id)
+        {
+            try
+            {
+                var order = await _orderService.GetOrderById(id);
+                if (order == null)
+                {
+                    return NotFound();
+                }
+                
+                // Map to view model
+                var viewModel = new OrderViewModel
+                {
+                    Id = order.Id,
+                    ProductId = order.ProductId.ToString(),
+                    ProductModel = order.Product?.Model,
+                    ProductBrand = order.Product?.Brand,
+                    RegistrationDate = order.RegistrationDate.ToString("yyyy-MM-dd"),
+                    RepairType = order.Repair.RepairType,
+                    AdditionalNotes = order.Repair.AdditionalNotes,
+                    OrderStatus = order.OrderStatus
+                };
+                
+                return View(viewModel);
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Error loading update order form: {ex.Message}");
+                
+                TempData["ErrorMessage"] = "Възникна грешка при зареждане на формата за редактиране.";
+                return RedirectToAction(nameof(Orders));
+            }
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        [Authorize(Roles = "Admin,Employee")]
+        public async Task<IActionResult> Update(OrderViewModel model)
+        {
+            if (ModelState.IsValid)
+            {
+                try
+                {
+                    await _orderService.UpdateOrder(model);
+                    
+                    TempData["SuccessMessage"] = "Поръчката е обновена успешно!";
+                    return RedirectToAction(nameof(Orders));
+                }
+                catch (Exception ex)
+                {
+                    Console.WriteLine($"Error updating order: {ex.Message}");
+                    ModelState.AddModelError("", "Възникна грешка при обновяване на поръчката. Моля, опитайте отново.");
+                }
+            }
+            
+            return View(model);
+        }
+
+        [Authorize(Roles = "Admin")]
+        public async Task<IActionResult> Delete(string id)
+        {
+            try
+            {
+                await _orderService.DeleteOrder(id);
+                
+                TempData["SuccessMessage"] = "Поръчката е изтрита успешно!";
+                return RedirectToAction(nameof(Orders));
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Error deleting order: {ex.Message}");
+                
+                TempData["ErrorMessage"] = "Възникна грешка при изтриване на поръчката.";
+                return RedirectToAction(nameof(Orders));
+            }
         }
     }
 }
+
