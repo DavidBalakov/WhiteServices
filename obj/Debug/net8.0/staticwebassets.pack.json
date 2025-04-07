@@ -17,34 +17,6 @@
       "PackagePath": "staticwebassets\\favicon.ico"
     },
     {
-      "Id": "D:\\Users\\User\\Desktop\\School\\12D\\Diploma\\wwwroot\\images\\dishwasher.webp",
-      "PackagePath": "staticwebassets\\images\\dishwasher.webp"
-    },
-    {
-      "Id": "D:\\Users\\User\\Desktop\\School\\12D\\Diploma\\wwwroot\\images\\dryer.webp",
-      "PackagePath": "staticwebassets\\images\\dryer.webp"
-    },
-    {
-      "Id": "D:\\Users\\User\\Desktop\\School\\12D\\Diploma\\wwwroot\\images\\microwave.webp",
-      "PackagePath": "staticwebassets\\images\\microwave.webp"
-    },
-    {
-      "Id": "D:\\Users\\User\\Desktop\\School\\12D\\Diploma\\wwwroot\\images\\oven.webp",
-      "PackagePath": "staticwebassets\\images\\oven.webp"
-    },
-    {
-      "Id": "D:\\Users\\User\\Desktop\\School\\12D\\Diploma\\wwwroot\\images\\placeholder.webp",
-      "PackagePath": "staticwebassets\\images\\placeholder.webp"
-    },
-    {
-      "Id": "D:\\Users\\User\\Desktop\\School\\12D\\Diploma\\wwwroot\\images\\refrigerator.webp",
-      "PackagePath": "staticwebassets\\images\\refrigerator.webp"
-    },
-    {
-      "Id": "D:\\Users\\User\\Desktop\\School\\12D\\Diploma\\wwwroot\\images\\washing-machine.webp",
-      "PackagePath": "staticwebassets\\images\\washing-machine.webp"
-    },
-    {
       "Id": "D:\\Users\\User\\Desktop\\School\\12D\\Diploma\\wwwroot\\js\\category\\index.js",
       "PackagePath": "staticwebassets\\js\\category\\index.js"
     },
