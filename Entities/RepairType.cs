@@ -11,9 +11,9 @@ namespace Diploma.Entities
 
     public enum RepairType
     {
-        WashingMachine,  
-        Refrigerator,   
-        Dishwasher,      
-        Stove           
+        Пералня,  
+        Хладилник,   
+        Съдомиялна,      
+        Печка           
     }
 }
