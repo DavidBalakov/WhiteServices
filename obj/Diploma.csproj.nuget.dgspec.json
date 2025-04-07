@@ -1,17 +1,17 @@
 {
   "format": 1,
   "restore": {
-    "D:\\Users\\User\\Desktop\\School\\12D\\Diploma\\Diploma.csproj": {}
+    "D:\\Users\\User\\Desktop\\School\\Diploma\\WhiteServices-project\\Diploma.csproj": {}
   },
   "projects": {
-    "D:\\Users\\User\\Desktop\\School\\12D\\Diploma\\Diploma.csproj": {
+    "D:\\Users\\User\\Desktop\\School\\Diploma\\WhiteServices-project\\Diploma.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "D:\\Users\\User\\Desktop\\School\\12D\\Diploma\\Diploma.csproj",
+        "projectUniqueName": "D:\\Users\\User\\Desktop\\School\\Diploma\\WhiteServices-project\\Diploma.csproj",
         "projectName": "Diploma",
-        "projectPath": "D:\\Users\\User\\Desktop\\School\\12D\\Diploma\\Diploma.csproj",
+        "projectPath": "D:\\Users\\User\\Desktop\\School\\Diploma\\WhiteServices-project\\Diploma.csproj",
         "packagesPath": "C:\\Users\\User\\.nuget\\packages\\",
-        "outputPath": "D:\\Users\\User\\Desktop\\School\\12D\\Diploma\\obj\\",
+        "outputPath": "D:\\Users\\User\\Desktop\\School\\Diploma\\WhiteServices-project\\obj\\",
         "projectStyle": "PackageReference",
         "configFilePaths": [
           "C:\\Users\\User\\AppData\\Roaming\\NuGet\\NuGet.Config",

@@ -9,115 +9,115 @@ build_property.EnforceExtendedAnalyzerRules =
 build_property._SupportedPlatformList = Linux,macOS,Windows
 build_property.RootNamespace = Diploma
 build_property.RootNamespace = Diploma
-build_property.ProjectDir = d:\Users\User\Desktop\School\12D\Diploma\
+build_property.ProjectDir = D:\Users\User\Desktop\School\Diploma\WhiteServices-project\
 build_property.EnableComHosting = 
 build_property.EnableGeneratedComInterfaceComImportInterop = 
 build_property.RazorLangVersion = 8.0
 build_property.SupportLocalizedComponentNames = 
 build_property.GenerateRazorMetadataSourceChecksumAttributes = 
-build_property.MSBuildProjectDirectory = d:\Users\User\Desktop\School\12D\Diploma
+build_property.MSBuildProjectDirectory = D:\Users\User\Desktop\School\Diploma\WhiteServices-project
 build_property._RazorSourceGeneratorDebug = 
 
-[d:/Users/User/Desktop/School/12D/Diploma/Views/Admin/AllUsers.cshtml]
+[D:/Users/User/Desktop/School/Diploma/WhiteServices-project/Views/Admin/AllUsers.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcQWRtaW5cQWxsVXNlcnMuY3NodG1s
 build_metadata.AdditionalFiles.CssScope = 
 
-[d:/Users/User/Desktop/School/12D/Diploma/Views/Home/Index.cshtml]
+[D:/Users/User/Desktop/School/Diploma/WhiteServices-project/Views/Home/Index.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcSG9tZVxJbmRleC5jc2h0bWw=
 build_metadata.AdditionalFiles.CssScope = 
 
-[d:/Users/User/Desktop/School/12D/Diploma/Views/Order/Create.cshtml]
+[D:/Users/User/Desktop/School/Diploma/WhiteServices-project/Views/Order/Create.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcT3JkZXJcQ3JlYXRlLmNzaHRtbA==
 build_metadata.AdditionalFiles.CssScope = 
 
-[d:/Users/User/Desktop/School/12D/Diploma/Views/Order/Details.cshtml]
+[D:/Users/User/Desktop/School/Diploma/WhiteServices-project/Views/Order/Details.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcT3JkZXJcRGV0YWlscy5jc2h0bWw=
 build_metadata.AdditionalFiles.CssScope = 
 
-[d:/Users/User/Desktop/School/12D/Diploma/Views/Order/Index.cshtml]
+[D:/Users/User/Desktop/School/Diploma/WhiteServices-project/Views/Order/Index.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcT3JkZXJcSW5kZXguY3NodG1s
 build_metadata.AdditionalFiles.CssScope = 
 
-[d:/Users/User/Desktop/School/12D/Diploma/Views/Order/Orders.cshtml]
+[D:/Users/User/Desktop/School/Diploma/WhiteServices-project/Views/Order/Orders.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcT3JkZXJcT3JkZXJzLmNzaHRtbA==
 build_metadata.AdditionalFiles.CssScope = 
 
-[d:/Users/User/Desktop/School/12D/Diploma/Views/Order/Update.cshtml]
+[D:/Users/User/Desktop/School/Diploma/WhiteServices-project/Views/Order/Update.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcT3JkZXJcVXBkYXRlLmNzaHRtbA==
 build_metadata.AdditionalFiles.CssScope = 
 
-[d:/Users/User/Desktop/School/12D/Diploma/Views/Order/UserOrders.cshtml]
+[D:/Users/User/Desktop/School/Diploma/WhiteServices-project/Views/Order/UserOrders.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcT3JkZXJcVXNlck9yZGVycy5jc2h0bWw=
 build_metadata.AdditionalFiles.CssScope = 
 
-[d:/Users/User/Desktop/School/12D/Diploma/Views/Order/_Form.cshtml]
+[D:/Users/User/Desktop/School/Diploma/WhiteServices-project/Views/Order/_Form.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcT3JkZXJcX0Zvcm0uY3NodG1s
 build_metadata.AdditionalFiles.CssScope = 
 
-[d:/Users/User/Desktop/School/12D/Diploma/Views/Products/Create.cshtml]
+[D:/Users/User/Desktop/School/Diploma/WhiteServices-project/Views/Products/Create.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcUHJvZHVjdHNcQ3JlYXRlLmNzaHRtbA==
 build_metadata.AdditionalFiles.CssScope = 
 
-[d:/Users/User/Desktop/School/12D/Diploma/Views/Products/Details.cshtml]
+[D:/Users/User/Desktop/School/Diploma/WhiteServices-project/Views/Products/Details.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcUHJvZHVjdHNcRGV0YWlscy5jc2h0bWw=
 build_metadata.AdditionalFiles.CssScope = 
 
-[d:/Users/User/Desktop/School/12D/Diploma/Views/Products/Products.cshtml]
+[D:/Users/User/Desktop/School/Diploma/WhiteServices-project/Views/Products/Products.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcUHJvZHVjdHNcUHJvZHVjdHMuY3NodG1s
 build_metadata.AdditionalFiles.CssScope = 
 
-[d:/Users/User/Desktop/School/12D/Diploma/Views/Products/Update.cshtml]
+[D:/Users/User/Desktop/School/Diploma/WhiteServices-project/Views/Products/Update.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcUHJvZHVjdHNcVXBkYXRlLmNzaHRtbA==
 build_metadata.AdditionalFiles.CssScope = 
 
-[d:/Users/User/Desktop/School/12D/Diploma/Views/Products/UserProducts.cshtml]
+[D:/Users/User/Desktop/School/Diploma/WhiteServices-project/Views/Products/UserProducts.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcUHJvZHVjdHNcVXNlclByb2R1Y3RzLmNzaHRtbA==
 build_metadata.AdditionalFiles.CssScope = 
 
-[d:/Users/User/Desktop/School/12D/Diploma/Views/Products/_Form.cshtml]
+[D:/Users/User/Desktop/School/Diploma/WhiteServices-project/Views/Products/_Form.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcUHJvZHVjdHNcX0Zvcm0uY3NodG1s
 build_metadata.AdditionalFiles.CssScope = 
 
-[d:/Users/User/Desktop/School/12D/Diploma/Views/RegisteredUser/CreateWorker.cshtml]
+[D:/Users/User/Desktop/School/Diploma/WhiteServices-project/Views/RegisteredUser/CreateWorker.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcUmVnaXN0ZXJlZFVzZXJcQ3JlYXRlV29ya2VyLmNzaHRtbA==
 build_metadata.AdditionalFiles.CssScope = 
 
-[d:/Users/User/Desktop/School/12D/Diploma/Views/RegisteredUser/Index.cshtml]
+[D:/Users/User/Desktop/School/Diploma/WhiteServices-project/Views/RegisteredUser/Index.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcUmVnaXN0ZXJlZFVzZXJcSW5kZXguY3NodG1s
 build_metadata.AdditionalFiles.CssScope = 
 
-[d:/Users/User/Desktop/School/12D/Diploma/Views/RegisteredUser/LogIn.cshtml]
+[D:/Users/User/Desktop/School/Diploma/WhiteServices-project/Views/RegisteredUser/LogIn.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcUmVnaXN0ZXJlZFVzZXJcTG9nSW4uY3NodG1s
 build_metadata.AdditionalFiles.CssScope = 
 
-[d:/Users/User/Desktop/School/12D/Diploma/Views/RegisteredUser/Register.cshtml]
+[D:/Users/User/Desktop/School/Diploma/WhiteServices-project/Views/RegisteredUser/Register.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcUmVnaXN0ZXJlZFVzZXJcUmVnaXN0ZXIuY3NodG1s
 build_metadata.AdditionalFiles.CssScope = 
 
-[d:/Users/User/Desktop/School/12D/Diploma/Views/Shared/Error.cshtml]
+[D:/Users/User/Desktop/School/Diploma/WhiteServices-project/Views/Shared/Error.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcU2hhcmVkXEVycm9yLmNzaHRtbA==
 build_metadata.AdditionalFiles.CssScope = 
 
-[d:/Users/User/Desktop/School/12D/Diploma/Views/Shared/_LoginPartial.cshtml]
+[D:/Users/User/Desktop/School/Diploma/WhiteServices-project/Views/Shared/_LoginPartial.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcU2hhcmVkXF9Mb2dpblBhcnRpYWwuY3NodG1s
 build_metadata.AdditionalFiles.CssScope = 
 
-[d:/Users/User/Desktop/School/12D/Diploma/Views/Shared/_Notification.cshtml]
+[D:/Users/User/Desktop/School/Diploma/WhiteServices-project/Views/Shared/_Notification.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcU2hhcmVkXF9Ob3RpZmljYXRpb24uY3NodG1s
 build_metadata.AdditionalFiles.CssScope = 
 
-[d:/Users/User/Desktop/School/12D/Diploma/Views/Shared/_ValidationScriptsPartial.cshtml]
+[D:/Users/User/Desktop/School/Diploma/WhiteServices-project/Views/Shared/_ValidationScriptsPartial.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcU2hhcmVkXF9WYWxpZGF0aW9uU2NyaXB0c1BhcnRpYWwuY3NodG1s
 build_metadata.AdditionalFiles.CssScope = 
 
-[d:/Users/User/Desktop/School/12D/Diploma/Views/_ViewImports.cshtml]
+[D:/Users/User/Desktop/School/Diploma/WhiteServices-project/Views/_ViewImports.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcX1ZpZXdJbXBvcnRzLmNzaHRtbA==
 build_metadata.AdditionalFiles.CssScope = 
 
-[d:/Users/User/Desktop/School/12D/Diploma/Views/_ViewStart.cshtml]
+[D:/Users/User/Desktop/School/Diploma/WhiteServices-project/Views/_ViewStart.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcX1ZpZXdTdGFydC5jc2h0bWw=
 build_metadata.AdditionalFiles.CssScope = 
 
-[d:/Users/User/Desktop/School/12D/Diploma/Views/Shared/_Layout.cshtml]
+[D:/Users/User/Desktop/School/Diploma/WhiteServices-project/Views/Shared/_Layout.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcU2hhcmVkXF9MYXlvdXQuY3NodG1s
 build_metadata.AdditionalFiles.CssScope = b-l21nsbqaut
