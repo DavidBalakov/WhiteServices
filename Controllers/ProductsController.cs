@@ -209,7 +209,7 @@ namespace Diploma.Controllers
             return View(model);
         }
 
-        [HttpGet]
+        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> Delete(string id)
         {
             try

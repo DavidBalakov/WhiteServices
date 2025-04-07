@@ -1,6 +1,7 @@
 @model IEnumerable<Diploma.Entities.Product>
+
 @{
-    ViewData["Title"] = "My Products";
+    ViewData["Title"] = "Моите продукти";
 }
 
 <div class="page-header">
@@ -8,11 +9,11 @@
         <div class="row align-items-center">
             <div class="col-md-6">
                 <h1>Моите продукти</h1>
-                <p>Управление на вашите продукти за ремонт</p>
+                <p>Управление на продуктите в системата</p>
             </div>
             <div class="col-md-6 text-md-end">
-                <a asp-action="Create" class="btn btn-light">
-                    <i class="bi bi-plus-circle me-2"></i>Добави нов продукт
+                <a href="/Products/Create" class="btn btn-primary">
+                    <i class="bi bi-plus-circle me-2"></i>Нов продукт
                 </a>
             </div>
         </div>
@@ -20,71 +21,190 @@
 </div>
 
 <div class="container">
-    <div class="card">
-        <div class="card-header bg-primary text-white d-flex justify-content-between align-items-center">
-            <h4 class="mb-0">Моите продукти</h4>
-            <div class="d-flex">
-                <div class="input-group">
-                    <input type="text" id="productSearch" class="form-control" placeholder="Потърси продукт...">
-                    <button class="btn btn-light" type="button">
-                        <i class="bi bi-search"></i>
-                    </button>
+    <div class="card shadow-sm">
+        <div class="card-header bg-white py-3">
+            <div class="row align-items-center">
+                <div class="col-md-8">
+                    <h5 class="mb-0 text-primary">Списък с всички продукти</h5>
+                </div>
+                <div class="col-md-4">
+                    <div class="input-group">
+                        <span class="input-group-text bg-light border-0">
+                            <i class="bi bi-search text-muted"></i>
+                        </span>
+                        <input type="text" id="productSearch" class="form-control border-0 bg-light" placeholder="Търсене на продукти...">
+                    </div>
                 </div>
             </div>
         </div>
+        
+        <!-- Filter Section -->
+        <div class="card-body border-bottom pb-0">
+            <div class="row">
+                <div class="col-md-12">
+                    <div class="filter-container mb-3">
+                        <div class="d-flex flex-wrap gap-2">
+                            <div class="filter-group">
+                                <label class="form-label mb-1">Марка</label>
+                                <select id="brandFilter" class="form-select form-select-sm">
+                                    <option value="">Всички марки</option>
+                                    @{
+                                        if (Model != null && Model.Any())
+                                        {
+                                            var brands = Model.Select(p => p.Brand).Where(b => b != null).Distinct().OrderBy(b => b);
+                                            foreach (var brand in brands)
+                                            {
+                                                <option value="@brand">@brand</option>
+                                            }
+                                        }
+                                    }
+                                </select>
+                            </div>
+                            
+                            <div class="filter-group">
+                                <label class="form-label mb-1">Потребител</label>
+                                <select id="userFilter" class="form-select form-select-sm">
+                                    <option value="">Всички потребители</option>
+                                    @{
+                                        if (Model != null && Model.Any())
+                                        {
+                                            var users = Model.Select(p => new { p.UserId, UserName = p.User?.UserName })
+                                                .Where(u => u.UserName != null)
+                                                .Distinct()
+                                                .OrderBy(u => u.UserName);
+                                            foreach (var user in users)
+                                            {
+                                                <option value="@user.UserId">@user.UserName</option>
+                                            }
+                                        }
+                                    }
+                                </select>
+                            </div>
+                            
+                            <div class="filter-group ms-auto">
+                                <label class="form-label mb-1">Сортиране</label>
+                                <select id="sortFilter" class="form-select form-select-sm">
+                                    <option value="brand">Марка (А-Я)</option>
+                                    <option value="brand-desc">Марка (Я-А)</option>
+                                    <option value="model">Модел (А-Я)</option>
+                                    <option value="model-desc">Модел (Я-А)</option>
+                                    <option value="user">Потребител (А-Я)</option>
+                                </select>
+                            </div>
+                            
+                            <div class="filter-group d-flex align-items-end">
+                                <button id="resetFilters" class="btn btn-sm btn-outline-secondary">
+                                    <i class="bi bi-x-circle me-1"></i>Нулиране
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
         <div class="card-body p-0">
             <div class="table-responsive">
                 <table class="table table-hover align-middle mb-0" id="productsTable">
-                        <thead class="table-light">
-                            <tr>
-                                <th class="ps-4">Сериен номер</th>
-                                <th>Марка</th>
-                                <th>Модел</th>
-                                <th class="text-end pe-4">Действия</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            @if (Model != null && Model.Any())
+                    <thead class="table-light">
+                        <tr>
+                            <th class="ps-4">Сериен номер</th>
+                            <th>Марка</th>
+                            <th>Модел</th>
+                            <th>Потребител</th>
+                            <th class="text-end pe-4">Действия</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @if (Model != null && Model.Any())
+                        {
+                            foreach (var product in Model)
                             {
-                                foreach (var product in Model)
-                                {
-                                    <tr data-brand="@product.Brand">
-                                        <td class="ps-4 fw-medium">@product.SerialNumber</td>
-                                        <td>@product.Brand</td>
-                                        <td>@product.Model</td>
-                                        <td class="text-end pe-4">
-                                            <div class="dropdown">
-                                                <button class="btn btn-sm btn-light" type="button" data-bs-toggle="dropdown" aria-expanded="false">
-                                                    <i class="bi bi-three-dots"></i>
-                                                </button>
-                                                <ul class="dropdown-menu dropdown-menu-end">
-                                                    <li><a class="dropdown-item" href="/Products/Details/@product.Id"><i class="bi bi-eye me-2 text-primary"></i>Преглед</a></li>
-                                                    <li><a class="dropdown-item" href="/Products/Update/@product.Id"><i class="bi bi-pencil me-2 text-secondary"></i>Редактиране</a></li>
-                                                    <li><hr class="dropdown-divider"></li>
-                                                    <li><a class="dropdown-item text-danger" href="#" data-bs-toggle="modal" data-bs-target="#deleteProductModal" data-product-id="@product.Id"><i class="bi bi-trash me-2"></i>Изтриване</a></li>
-                                                </ul>
-                                            </div>
-                                        </td>
-                                    </tr>
-                                }
-                            }
-                            else
-                            {
-                                <tr>
-                                    <td colspan="4" class="text-center py-5">
-                                        <div class="py-5">
-                                            <i class="bi bi-box text-muted" style="font-size: 3rem;"></i>
-                                            <h5 class="mt-3">Няма намерени продукти</h5>
-                                            <p class="text-muted mb-3">Все още няма продукти в системата.</p>
-                                            <a href="/Products/Create" class="btn btn-primary">
-                                                <i class="bi bi-plus-circle me-2"></i>Добави нов продукт
-                                            </a>
+                                <tr data-brand="@product.Brand" data-user-id="@product.UserId">
+                                    <td class="ps-4 fw-medium">@product.SerialNumber</td>
+                                    <td>@product.Brand</td>
+                                    <td>@product.Model</td>
+                                    <td>@(product.User?.UserName ?? "-")</td>
+                                    <td class="text-end pe-4">
+                                        <div class="dropdown">
+                                            <button class="btn btn-sm btn-light" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+                                                <i class="bi bi-three-dots"></i>
+                                            </button>
+                                            <ul class="dropdown-menu dropdown-menu-end">
+                                                <li><a class="dropdown-item" href="/Products/Details/@product.Id"><i class="bi bi-eye me-2 text-primary"></i>Преглед</a></li>
+                                                <li><a class="dropdown-item" href="/Products/Update/@product.Id"><i class="bi bi-pencil me-2 text-secondary"></i>Редактиране</a></li>
+                                                <li><hr class="dropdown-divider"></li>
+                                                <li><a class="dropdown-item text-danger delete-product-btn" href="#" data-bs-toggle="modal" data-bs-target="#deleteProductModal" data-product-id="@product.Id"><i class="bi bi-trash me-2"></i>Изтриване</a></li>
+                                            </ul>
                                         </div>
                                     </td>
                                 </tr>
                             }
-                        </tbody>
-                    </table>
+                        }
+                        else
+                        {
+                            <tr>
+                                <td colspan="5" class="text-center py-5">
+                                    <div class="py-5">
+                                        <i class="bi bi-box text-muted" style="font-size: 3rem;"></i>
+                                        <h5 class="mt-3">Няма намерени продукти</h5>
+                                        <p class="text-muted mb-3">Все още няма продукти в системата.</p>
+                                        <a href="/Products/Create" class="btn btn-primary">
+                                            <i class="bi bi-plus-circle me-2"></i>Добави нов продукт
+                                        </a>
+                                    </div>
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+        </div>
+        <div class="card-footer bg-white py-3">
+            <div class="row align-items-center">
+                <div class="col-md-6">
+                    <p class="mb-0 text-muted">Показване на <span id="visibleCount">@(Model?.Count() ?? 0)</span> от <span id="totalCount">@(Model?.Count() ?? 0)</span> продукта</p>
+                </div>
+                <div class="col-md-6 text-md-end">
+                    <nav aria-label="Page navigation">
+                        <ul class="pagination pagination-sm mb-0 justify-content-end">
+                            <li class="page-item disabled">
+                                <a class="page-link" href="#" tabindex="-1" aria-disabled="true">Предишна</a>
+                            </li>
+                            <li class="page-item active"><a class="page-link" href="#">1</a></li>
+                            <li class="page-item"><a class="page-link" href="#">2</a></li>
+                            <li class="page-item"><a class="page-link" href="#">3</a></li>
+                            <li class="page-item">
+                                <a class="page-link" href="#">Следваща</a>
+                            </li>
+                        </ul>
+                    </nav>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Delete Product Modal -->
+<div class="modal fade" id="deleteProductModal" tabindex="-1" aria-labelledby="deleteProductModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header border-0">
+                <h5 class="modal-title" id="deleteProductModalLabel">Потвърждение за изтриване</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body text-center py-4">
+                <i class="bi bi-exclamation-triangle text-warning" style="font-size: 3rem;"></i>
+                <h5 class="mt-3">Сигурни ли сте?</h5>
+                <p class="text-muted">Наистина ли искате да изтриете този продукт? Този процес не може да бъде отменен.</p>
+                <div id="deleteWarning" class="alert alert-danger mt-3 d-none">
+                    <i class="bi bi-exclamation-circle me-2"></i>
+                    <span>Внимание: Продуктът има свързани поръчки и не може да бъде изтрит.</span>
+                </div>
+            </div>
+            <div class="modal-footer border-0">
+                <button type="button" class="btn btn-light" data-bs-dismiss="modal">Отказ</button>
+                <a href="#" id="confirmDeleteBtn" class="btn btn-danger">Изтрий продукта</a>
             </div>
         </div>
     </div>
@@ -93,13 +213,124 @@
 @section Scripts {
     <script>
         $(document).ready(function() {
+            // Search functionality
             $("#productSearch").on("keyup", function() {
-                var value = $(this).val().toLowerCase();
-                $("#userProductsTable tbody tr").filter(function() {
-                    $(this).toggle($(this).text().toLowerCase().indexOf(value) > -1)
-                });
+                applyFilters();
             });
             
+            // Filter functionality
+            $("#brandFilter, #userFilter, #sortFilter").on("change", function() {
+                applyFilters();
+            });
+            
+            // Reset filters
+            $("#resetFilters").on("click", function() {
+                $("#productSearch").val("");
+                $("#brandFilter").val("");
+                $("#userFilter").val("");
+                $("#sortFilter").val("brand");
+                applyFilters();
+            });
+            
+            // Handle delete modal
+            $(document).on('click', '.delete-product-btn', function() {
+                var productId = $(this).data('product-id');
+                $('#confirmDeleteBtn').attr('href', '/Products/Delete/' + productId);
+                
+                // Скриваме предупреждението при всяко отваряне на модала
+                $('#deleteWarning').addClass('d-none');
+                
+                // Проверяваме дали продуктът има свързани поръчки
+                checkProductOrders(productId);
+            });
+            
+            function checkProductOrders(productId) {
+                $.ajax({
+                    url: '/Products/CheckProductOrders',
+                    type: 'GET',
+                    data: { id: productId },
+                    dataType: 'json',
+                    success: function(response) {
+                        if (response.hasOrders) {
+                            // Ако има свързани поръчки, показваме предупреждение и деактивираме бутона
+                            $('#deleteWarning').removeClass('d-none');
+                            $('#confirmDeleteBtn').addClass('disabled').attr('href', '#');
+                        } else {
+                            // Ако няма свързани поръчки, скриваме предупреждението и активираме бутона
+                            $('#deleteWarning').addClass('d-none');
+                            $('#confirmDeleteBtn').removeClass('disabled').attr('href', '/Products/Delete/' + productId);
+                        }
+                    },
+                    error: function(error) {
+                        console.error('Error checking product orders:', error);
+                    }
+                });
+            }
+            
+            function applyFilters() {
+                var searchValue = $("#productSearch").val().toLowerCase();
+                var brandFilter = $("#brandFilter").val();
+                var userFilter = $("#userFilter").val();
+                var sortFilter = $("#sortFilter").val();
+                var visibleCount = 0;
+                
+                // First hide/show based on filters
+                $("#productsTable tbody tr").each(function() {
+                    var row = $(this);
+                    var rowText = row.text().toLowerCase();
+                    var rowBrand = row.data("brand");
+                    var rowUserId = row.data("user-id");
+                    
+                    var matchesSearch = rowText.indexOf(searchValue) > -1;
+                    var matchesBrand = brandFilter === "" || rowBrand === brandFilter;
+                    var matchesUser = userFilter === "" || rowUserId === userFilter;
+                    
+                    var isVisible = matchesSearch && matchesBrand && matchesUser;
+                    row.toggle(isVisible);
+                    
+                    if (isVisible) visibleCount++;
+                });
+                
+                // Then sort the visible rows
+                var rows = $("#productsTable tbody tr:visible").get();
+                rows.sort(function(a, b) {
+                    var keyA, keyB;
+                    
+                    switch(sortFilter) {
+                        case "brand":
+                            keyA = $(a).find("td:eq(1)").text().toUpperCase();
+                            keyB = $(b).find("td:eq(1)").text().toUpperCase();
+                            return keyA.localeCompare(keyB);
+                        case "brand-desc":
+                            keyA = $(a).find("td:eq(1)").text().toUpperCase();
+                            keyB = $(b).find("td:eq(1)").text().toUpperCase();
+                            return keyB.localeCompare(keyA);
+                        case "model":
+                            keyA = $(a).find("td:eq(2)").text().toUpperCase();
+                            keyB = $(b).find("td:eq(2)").text().toUpperCase();
+                            return keyA.localeCompare(keyB);
+                        case "model-desc":
+                            keyA = $(a).find("td:eq(2)").text().toUpperCase();
+                            keyB = $(b).find("td:eq(2)").text().toUpperCase();
+                            return keyB.localeCompare(keyA);
+                        case "user":
+                            keyA = $(a).find("td:eq(3)").text().toUpperCase();
+                            keyB = $(b).find("td:eq(3)").text().toUpperCase();
+                            return keyA.localeCompare(keyB);
+                        default:
+                            return 0;
+                    }
+                });
+                
+                // Reappend in the new order
+                $.each(rows, function(index, row) {
+                    $("#productsTable tbody").append(row);
+                });
+                
+                $("#visibleCount").text(visibleCount);
+            }
+            
+            // Initialize tooltips
             var tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'));
             var tooltipList = tooltipTriggerList.map(function (tooltipTriggerEl) {
                 return new bootstrap.Tooltip(tooltipTriggerEl);
